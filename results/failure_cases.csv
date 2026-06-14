@@ -1,0 +1,6 @@
+case,task_success,unsafe_recall,physical_violation,damage,lesson
+cluttered_navigation_clearance,0.5464,0.4058,0.3597,0.1120,clearance probes reject unsafe paths but false rejections and cost leave deliberation competitive
+container_liquid_transfer,0.5255,0.4205,0.3333,0.1162,leakage and counterintuitive containment failures still cause spills when tests are noisy
+door_drawer_opening,0.6132,0.4170,0.3013,0.0775,articulation direction benefits from language/deliberation as much as executable tests
+stackable_object_placement,0.5904,0.4309,0.2994,0.0844,support tests reduce collapses but over-reject valid placements under visual ambiguity
+tool_use_reachability,0.5608,0.4192,0.2987,0.0798,geometry-only affordance reasoning often solves reach/contact without physical probes
