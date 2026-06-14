@@ -1,16 +1,32 @@
-Submission-hardening experiment for paper 96 robotic_common_sense_tests
-Seven seeds, 600 episodes per seed, strong baselines, ablations, stress sweep, and negative cases.
-observed_only_behavior_clone hidden_mode_shift mean_success=0.4217 ci95=0.0152 tail=0.5783
-observed_only_behavior_clone combined_stress mean_success=0.3207 ci95=0.0089 tail=0.6793
-data_augmentation_wam hidden_mode_shift mean_success=0.5017 ci95=0.0174 tail=0.4983
-data_augmentation_wam combined_stress mean_success=0.4169 ci95=0.0151 tail=0.5831
-scalar_uncertainty_planner hidden_mode_shift mean_success=0.5519 ci95=0.0175 tail=0.4481
-scalar_uncertainty_planner combined_stress mean_success=0.4964 ci95=0.0075 tail=0.5036
-ensemble_disagreement_planner hidden_mode_shift mean_success=0.6002 ci95=0.0118 tail=0.3998
-ensemble_disagreement_planner combined_stress mean_success=0.5431 ci95=0.0176 tail=0.4569
-conformal_risk_filter hidden_mode_shift mean_success=0.6195 ci95=0.0136 tail=0.3805
-conformal_risk_filter combined_stress mean_success=0.5543 ci95=0.0142 tail=0.4457
-proposed_branch_mechanism hidden_mode_shift mean_success=0.6974 ci95=0.0137 tail=0.3026
-proposed_branch_mechanism combined_stress mean_success=0.6621 ci95=0.0119 tail=0.3379
-oracle_branch_upper_bound hidden_mode_shift mean_success=0.7764 ci95=0.0101 tail=0.2236
-oracle_branch_upper_bound combined_stress mean_success=0.7426 ci95=0.0203 tail=0.2574
+Paper 96: robotic_common_sense_tests evidence audit
+Seeds: 7; tasks: 5; assumptions: 7; splits: 5; episodes per group: 88
+Evidence type: deterministic local executable-common-sense benchmark, not robot hardware validation.
+Terminal decision: KILL_ARCHIVE
+Reason: Proposed executable common-sense tests do not clear the ICLR-main gate: the strongest closed-loop baseline (human_oracle_query_policy) has higher combined-stress task success, and test-based recall does not produce a decisive success/safety/regret win.
+
+Combined-stress ranking by task success:
+- oracle_physical_assumption: success=0.7516 +/- 0.0058; recall=0.8576; violation=0.2440; damage=0.0529; cost=0.0138; human=0.0832; regret=0.1176
+- human_oracle_query_policy: success=0.6333 +/- 0.0066; recall=0.4574; violation=0.2918; damage=0.0787; cost=0.0397; human=0.3770; regret=0.1856
+- proposed_executable_common_sense_tests: success=0.5673 +/- 0.0081; recall=0.4187; violation=0.3185; damage=0.0940; cost=0.0149; human=0.0000; regret=0.2170
+- uncertainty_threshold_probe: success=0.4704 +/- 0.0072; recall=0.2444; violation=0.3444; damage=0.1064; cost=0.0276; human=0.0000; regret=0.2681
+- model_to_model_deliberation: success=0.4584 +/- 0.0071; recall=0.1066; violation=0.3651; damage=0.1208; cost=0.0012; human=0.0000; regret=0.2759
+- failure_retrieval_policy: success=0.4522 +/- 0.0076; recall=0.1285; violation=0.3771; damage=0.1197; cost=0.0042; human=0.0000; regret=0.2855
+- sequential_3d_affordance_reasoner: success=0.4346 +/- 0.0078; recall=0.0263; violation=0.3942; damage=0.1296; cost=0.0024; human=0.0000; regret=0.2951
+- llm_common_sense_replanner: success=0.3948 +/- 0.0078; recall=0.0112; violation=0.3951; damage=0.1341; cost=0.0008; human=0.0000; regret=0.3136
+- direct_vlm_action_policy: success=0.3657 +/- 0.0069; recall=0.0000; violation=0.4020; damage=0.1275; cost=0.0000; human=0.0000; regret=0.3297
+
+Gate details:
+- Strongest non-oracle success baseline: human_oracle_query_policy (0.6333)
+- Proposed success: 0.5673
+- Best non-oracle violation baseline: human_oracle_query_policy (0.2918)
+- Proposed violation: 0.3185
+- Best non-oracle recall baseline: human_oracle_query_policy (0.4574)
+- Proposed recall: 0.4187; false rejection: 0.4266; cost: 0.0149; human burden: 0.0000
+- Ablations matching full within gate tolerance: minus_calibration, minus_cost_model
+
+Failure cases:
+- cluttered_navigation_clearance: success=0.5464, recall=0.4058, violation=0.3597, damage=0.1120; clearance probes reject unsafe paths but false rejections and cost leave deliberation competitive
+- container_liquid_transfer: success=0.5255, recall=0.4205, violation=0.3333, damage=0.1162; leakage and counterintuitive containment failures still cause spills when tests are noisy
+- door_drawer_opening: success=0.6132, recall=0.4170, violation=0.3013, damage=0.0775; articulation direction benefits from language/deliberation as much as executable tests
+- stackable_object_placement: success=0.5904, recall=0.4309, violation=0.2994, damage=0.0844; support tests reduce collapses but over-reject valid placements under visual ambiguity
+- tool_use_reachability: success=0.5608, recall=0.4192, violation=0.2987, damage=0.0798; geometry-only affordance reasoning often solves reach/contact without physical probes

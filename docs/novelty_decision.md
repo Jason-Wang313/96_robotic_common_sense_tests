@@ -1,7 +1,9 @@
 # Novelty Decision
 
-Chosen thesis: Robotic Common-Sense Tests turns the seed bet into a mechanism: Turn common-sense physical assumptions into executable affordance tests.
+Chosen thesis: Robotic Common-Sense Tests evaluates whether physical common-sense assumptions can be turned into executable affordance tests.
 
-New central mechanism: Robotic common sense tests keeps action-critical alternatives explicit until a physical observation collapses them.
+New central mechanism tested: low-cost probes that reject unsafe affordances before committing to manipulation or navigation actions.
 
-Decision: proceed as a revise/workshop-strength ICLR-style draft with synthetic but runnable evidence.
+Decision: KILL_ARCHIVE.
+
+Reason: the v4 benchmark shows the proposed tests improve over non-human reasoning baselines, but they lose task success, safety, damage, and regret to human-query policy and are contradicted by ablations. The novelty boundary is therefore not strong enough for ICLR main.

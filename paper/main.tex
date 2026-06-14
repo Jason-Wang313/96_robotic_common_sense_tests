@@ -4,42 +4,132 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{booktabs}
-\title{Robotic Common-Sense Tests: ICLR Main-Conference Gate Archive}
+\usepackage{graphicx}
+\usepackage{microtype}
+
+\title{Robotic Common-Sense Tests: A Negative Evidence Audit for Executable Physical Assumption Probes}
 \author{Anonymous Authors}
+
 \begin{document}
 \maketitle
+
 \begin{abstract}
-This document is not an ICLR main-conference submission. It is the v3 main-conference gate for a generated robotics draft about physical reasoning for robots. The original research bet was: Turn common-sense physical assumptions into executable affordance tests. After a stricter hostile review, the honest terminal decision is \textbf{KILL/ARCHIVE}. Submission-hardening version: v3.
+This paper is a submission-hardening audit, not an ICLR-main submission. The generated research bet was that robots should turn common-sense physical assumptions into executable affordance tests before committing to actions. We rebuilt the claim as a deterministic common-sense benchmark with five household-style tasks, seven physical assumption families, five distribution shifts, nine methods, seven seeds, ablations, stress sweeps, paired confidence intervals, and failure cases. The result is mixed but terminally negative. Executable tests beat non-human reasoning baselines under combined stress, but human-query policy reaches $0.633 \pm 0.007$ task success while the proposed method reaches $0.567 \pm 0.008$. The proposed method also has higher physical violations, higher damage, higher regret, high false rejection, and ablation contradictions. The terminal decision is therefore \textbf{KILL/ARCHIVE for ICLR main}.
 \end{abstract}
 
-\section{Gate Decision}
-The v2 paper was workshop-only. Under the active ICLR-main standard, that is insufficient. The local artifacts contain synthetic multi-seed diagnostics, but no real-robot validation, high-fidelity simulator benchmark, trained world-action model, implemented real baselines, or manual full-paper related-work synthesis. These missing items are not recoverable by editing text or rerunning the synthetic script.
+\section{Terminal Decision}
 
-\section{Fatal ICLR-Main Blockers}
-\begin{itemize}
-\item Evidence is synthetic and generated from a shared batch template.
-\item Baselines are diagnostic probability models, not implemented competing robot systems.
-\item Ablations do not correspond to a trained model checkpoint.
-\item No hardware, high-fidelity benchmark, qualitative rollouts, or failure videos are available.
-\item Related work is based on pool slices and hostile metadata, not a manual full-paper synthesis.
-\item Claims would be misleading if framed as ICLR-main empirical robotics evidence.
-\end{itemize}
+The paper fails the ICLR-main evidence gate. The claim under test is not simply that physical common sense can be represented in text or geometry; that is already crowded by embodied reasoning, sequential affordance reasoning, large action models, LLM replanning, failure-reasoning data, robot common-sense embeddings, and model deliberation. The claim must be closed-loop: executable physical tests should change robot action choices and reduce failures without excessive cost or false rejection.
+
+The local benchmark shows a useful partial-positive result: executable tests beat direct VLM action, LLM replanning, sequential 3D affordance reasoning, model-to-model deliberation, failure retrieval, and uncertainty-threshold probing under combined stress. However, they do not beat human-query policy. The paired proposed-minus-human success difference is $-0.06600 \pm 0.01009$ over 245 task/assumption/seed groups. Physical violation, damage, unsafe recall, and regret also favor the human-query baseline. We therefore archive the idea rather than submit it.
 
 \section{Hostile Prior-Work Pressure}
-The closest local hostile records include:
-\begin{itemize}
-\item Critical Review: Cosmos-Reason1: From Physical Common Sense To Embodied Reasoning (2025)
-\item SeqAfford: Sequential 3D Affordance Reasoning via Multimodal Large Language Model (2025)
-\item From Large Language Models to Large Action Models: Reasoning and Planning with Physical World Knowledge (2025)
-\item A Human-in-The-Loop Approach to Robot Action Replanning Through LLM Common-Sense Reasoning (2025)
-\item Scaling Cross-Environment Failure Reasoning Data for Vision-Language Robotic Manipulation (2025)
-\end{itemize}
-These works make generic world models, uncertainty, model-based planning, and robot policy robustness crowded. Without real empirical evidence, the remaining novelty boundary is too weak for ICLR main.
 
-\section{What Remains Useful}
-The archive is still useful as an idea seed and reproducibility scaffold. The synthetic code, stress-test CSVs, reviewer attacks, and novelty-boundary docs can inform a future project. The correct next step is not more paper polishing; it is new evidence: implemented models, real baselines, manual related work, and robot or high-fidelity simulator validation.
+The hostile literature pool includes Cosmos-Reason1-style embodied physical reasoning, SeqAfford, large action models with physical knowledge, human-in-the-loop LLM replanning, cross-environment failure reasoning for robotic manipulation, common-sense embeddings, physical reasoning benchmarks, affordance transfer, and safety deliberation. Under this prior-work pressure, a paper cannot claim novelty from ``common sense'' or ``affordance tests'' alone. The contribution would need to show that executable tests improve what the robot chooses and executes relative to these baselines. The v4 benchmark does not support that stronger claim.
 
-\section{Terminal Action}
-Decision: \textbf{KILL/ARCHIVE for ICLR main}. Do not submit this paper to ICLR main in the current form. Revival requires a substantially new empirical project.
+\section{Benchmark}
+
+The benchmark is a deterministic local simulator for physical-assumption testing and action selection. It is not robot hardware validation and is not high-fidelity physics. Its purpose is narrower: determine whether the proposed mechanism survives strong local baselines and stress tests.
+
+\paragraph{Tasks.}
+We evaluate stackable object placement, container liquid transfer, tool-use reachability, door/drawer opening, and cluttered navigation clearance.
+
+\paragraph{Assumption families.}
+The physical assumptions are support stability, containment/leakage, rigidity/deformation, tool reach/contact, articulation direction, clearance/collision, and mass/inertia.
+
+\paragraph{Splits.}
+We test nominal household scenes, visual ambiguity, counterintuitive physics, language-goal ambiguity, and combined common-sense stress.
+
+\paragraph{Methods.}
+The methods are direct VLM action policy, LLM common-sense replanner, sequential 3D affordance reasoner, uncertainty-threshold probe, model-to-model deliberation, failure retrieval policy, human-query policy, proposed executable common-sense tests, and oracle physical assumption.
+
+\paragraph{Metrics.}
+Reasoning/test metrics are assumption diagnosis accuracy, unsafe-affordance rejection recall, false rejection, calibration error, and test informativeness. Closed-loop metrics are task success, physical violation rate, damage/spill/collision rate, test/query cost, human-query burden, and planning regret to oracle.
+
+\section{Combined-Stress Results}
+
+Table~\ref{tab:combined} is the main decision gate. The proposed method is the strongest no-human method on success and improves unsafe recall relative to other autonomous baselines. But human-query policy has higher success, lower physical violations, lower damage, and lower regret. This is not an ICLR-main win because the gate requires a decisive closed-loop advantage over the strongest non-oracle baseline, not only a lower-cost autonomous alternative.
+
+\begin{table}[t]
+\caption{Combined common-sense stress. Success and recall are higher-is-better; violation, damage, and cost are lower-is-better.}
+\label{tab:combined}
+\centering
+\resizebox{\textwidth}{!}{\input{../results/combined_stress_table.tex}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/common_sense_diagnosis_quality.png}
+\caption{Common-sense diagnosis and unsafe-rejection metrics. Executable tests improve autonomous unsafe-rejection recall but do not beat human-query policy.}
+\label{fig:diagnosis}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/common_sense_task_outcomes.png}
+\caption{Closed-loop outcomes under combined stress. The proposed method is the best no-human method, but human-query policy remains better on success and safety.}
+\label{fig:outcomes}
+\end{figure}
+
+\section{Paired Gate}
+
+The strongest non-oracle closed-loop baseline is human-query policy. The proposed method wins on cost and human burden, but loses the main success/safety gate:
+
+\begin{table}[t]
+\caption{Paired proposed-minus-human-query differences over 245 task/assumption/seed groups. Positive is good only for success and recall; positive is worse for violation, damage, cost, human burden, and regret.}
+\label{tab:paired}
+\centering
+\resizebox{\textwidth}{!}{\input{../results/pairwise_decision_table.tex}}
+\end{table}
+
+The proposed method has zero human burden and lower cost, but it also has lower success, higher physical violation, higher damage, higher regret, and lower unsafe recall. A lower-burden method could be valuable, but the present evidence does not justify an ICLR-main claim.
+
+\section{Ablations}
+
+The ablation table is an additional blocker. Removing the cost model or calibration improves task success, violation, recall, and regret. This means the proposed test-selection mechanism is not internally supported: the full method is not the best version of itself.
+
+\begin{table}[t]
+\caption{Ablations under combined stress. Two ablations beat the full method on task success.}
+\label{tab:ablations}
+\centering
+\resizebox{\textwidth}{!}{\input{../results/ablation_table.tex}}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/common_sense_ablation.png}
+\caption{Ablation outcomes. The full method is contradicted by the cost-model and calibration ablations.}
+\label{fig:ablations}
+\end{figure}
+
+\section{Stress Sweep and Cost-Regret Tradeoff}
+
+At maximum stress, human-query policy remains ahead with $0.632 \pm 0.008$ success, while the proposed method reaches $0.563 \pm 0.009$. The proposed method remains much better than direct VLM, LLM replanning, sequential affordance reasoning, deliberation, and retrieval, which is a useful diagnostic result. It is not enough for submission readiness because the strongest baseline still wins.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/common_sense_stress_sweep.png}
+\caption{Stress sweep. Executable tests degrade more gracefully than other autonomous baselines, but human-query policy remains strongest.}
+\label{fig:stress}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.86\textwidth]{../figures/common_sense_cost_regret.png}
+\caption{Cost-regret tradeoff under combined stress. The proposed method has low cost and no human burden, but regret remains higher than the human-query baseline.}
+\label{fig:costregret}
+\end{figure}
+
+\section{Failure Cases}
+
+The failure modes are task-specific. Liquid transfer still spills when containment tests are noisy. Stackable placement over-rejects valid placements under visual ambiguity. Cluttered navigation rejects unsafe paths but still has high violation in tight clearance. Door and drawer opening benefits from language and deliberation as much as executable tests. Tool-use reachability is often handled by geometry-only affordance reasoning without physical probes.
+
+\section{Limitations}
+
+This audit is honest about scope. The benchmark is deterministic and paper-specific, but it is not real robot validation, not high-fidelity physics, and not an integration of external VLM/LLM/affordance codebases. It has no trained checkpoints, hardware videos, or manual full-paper related-work synthesis. Those missing items would already prevent an ICLR-main submission. More importantly, the available local evidence is negative before reaching that bar.
+
+\section{Conclusion}
+
+Executable robotic common-sense tests are promising as an autonomous alternative to pure reasoning baselines, but the current method is not ICLR-main ready. It loses to human-query policy on success, physical violation, damage, unsafe recall, and regret, and its ablations contradict the full mechanism. The correct terminal action is \textbf{KILL/ARCHIVE}. A revival would require a substantially new empirical project where executable tests match or beat human-query recovery under a human-burden-aware objective in real robot or high-fidelity simulator experiments.
 
 \end{document}

@@ -1,13 +1,21 @@
 # Novelty Boundary Map
 
 ## Crowded Territory
-- Bigger data/model scaling.
+
+- Generic common-sense reasoning.
+- VLM/LLM affordance selection.
+- Sequential 3D affordance reasoning.
+- Model-to-model deliberation.
+- Failure-retrieval policies.
+- Human-in-the-loop replanning.
 - New benchmark only.
-- Generic active learning or uncertainty.
-- Combining a planner with a learned policy without a new state/action object.
 
-## Claimed Boundary
-Robotic common sense tests keeps action-critical alternatives explicit until a physical observation collapses them.
+## Claimed Boundary Tested
 
-## What Would Falsify The Claim
-If observed-only baselines match the adverse-mode coverage and closed-loop success of the proposed branch-aware mechanism, the paper should be revised or killed.
+The only plausible boundary was executable common-sense testing: convert a physical assumption into a low-cost action probe that falsifies unsafe affordances before the robot commits to the action.
+
+## Falsification Result
+
+The boundary is not defensible for ICLR main. The proposed method beats non-human reasoning baselines, but human-query policy still has higher success, lower physical violations, lower damage, and lower regret. The full method is also contradicted by calibration and cost-model ablations.
+
+Decision: KILL_ARCHIVE. A future revival would need executable tests that match human-query safety or clearly dominate it under a human-burden-aware objective.
