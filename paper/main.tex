@@ -6,6 +6,7 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{microtype}
+\raggedbottom
 
 \title{Robotic Common-Sense Tests: A Negative Evidence Audit for Executable Physical Assumption Probes}
 \author{Anonymous Authors}
@@ -21,15 +22,15 @@ This paper is a submission-hardening audit, not an ICLR-main submission. The gen
 
 The paper fails the ICLR-main evidence gate. The claim under test is not simply that physical common sense can be represented in text or geometry; that is already crowded by embodied reasoning, sequential affordance reasoning, large action models, LLM replanning, failure-reasoning data, robot common-sense embeddings, and model deliberation. The claim must be closed-loop: executable physical tests should change robot action choices and reduce failures without excessive cost or false rejection.
 
-The local benchmark shows a useful partial-positive result: executable tests beat direct VLM action, LLM replanning, sequential 3D affordance reasoning, model-to-model deliberation, failure retrieval, and uncertainty-threshold probing under combined stress. However, they do not beat human-query policy. The paired proposed-minus-human success difference is $-0.06600 \pm 0.01009$ over 245 task/assumption/seed groups. Physical violation, damage, unsafe recall, and regret also favor the human-query baseline. We therefore archive the idea rather than submit it.
+The local benchmark shows a useful partial-positive result: executable tests beat direct VLM action, LLM replanning, sequential 3D affordance reasoning, model-to-model deliberation, failure retrieval, and uncertainty-threshold probing under combined stress. However, they do not beat human-query policy. A 2026-06-15 continuation rerun reproduced the same terminal gate outcome. The paired proposed-minus-human success difference is $-0.06600 \pm 0.01009$ over 245 task/assumption/seed groups. Physical violation, damage, unsafe recall, and regret also favor the human-query baseline. We therefore archive the idea rather than submit it.
 
 \section{Hostile Prior-Work Pressure}
 
-The hostile literature pool includes Cosmos-Reason1-style embodied physical reasoning, SeqAfford, large action models with physical knowledge, human-in-the-loop LLM replanning, cross-environment failure reasoning for robotic manipulation, common-sense embeddings, physical reasoning benchmarks, affordance transfer, and safety deliberation. Under this prior-work pressure, a paper cannot claim novelty from ``common sense'' or ``affordance tests'' alone. The contribution would need to show that executable tests improve what the robot chooses and executes relative to these baselines. The v4 benchmark does not support that stronger claim.
+The hostile literature pool includes embodied physical reasoning, sequential affordance reasoning, large action models with physical knowledge, human-in-the-loop LLM replanning, cross-environment failure reasoning for manipulation, common-sense embeddings, physical reasoning benchmarks, affordance transfer, and safety deliberation. Under this prior-work pressure, a paper cannot claim novelty from ``common sense'' or ``affordance tests'' alone. The contribution would need to show that executable tests improve what the robot chooses and executes relative to these baselines. The v4.1 rerun does not support that stronger claim.
 
 \section{Benchmark}
 
-The benchmark is a deterministic local simulator for physical-assumption testing and action selection. It is not robot hardware validation and is not high-fidelity physics. Its purpose is narrower: determine whether the proposed mechanism survives strong local baselines and stress tests.
+The benchmark is a deterministic local simulator for physical-assumption testing and action selection. It is not robot hardware validation and is not high-fidelity physics. Its purpose is narrower: determine whether the proposed mechanism survives strong local baselines and stress tests. The continuation audit reran the full seven-seed benchmark without reducing tasks, assumptions, splits, methods, ablations, stress levels, or episodes.
 
 \paragraph{Tasks.}
 We evaluate stackable object placement, container liquid transfer, tool-use reachability, door/drawer opening, and cluttered navigation clearance.
@@ -130,6 +131,6 @@ This audit is honest about scope. The benchmark is deterministic and paper-speci
 
 \section{Conclusion}
 
-Executable robotic common-sense tests are promising as an autonomous alternative to pure reasoning baselines, but the current method is not ICLR-main ready. It loses to human-query policy on success, physical violation, damage, unsafe recall, and regret, and its ablations contradict the full mechanism. The correct terminal action is \textbf{KILL/ARCHIVE}. A revival would require a substantially new empirical project where executable tests match or beat human-query recovery under a human-burden-aware objective in real robot or high-fidelity simulator experiments.
+Executable robotic common-sense tests are promising as an autonomous alternative to pure reasoning baselines, but the current method is not ICLR-main ready. The rebuilt and rerun evidence shows that it loses to human-query policy on success, physical violation, damage, unsafe recall, and regret, and its ablations contradict the full mechanism. The correct terminal action is \textbf{KILL/ARCHIVE}. A revival would require a substantially new empirical project where executable tests match or beat human-query recovery under a human-burden-aware objective in real robot or high-fidelity simulator experiments.
 
 \end{document}

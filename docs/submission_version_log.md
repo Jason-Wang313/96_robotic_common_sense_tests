@@ -28,3 +28,10 @@
 - Generated paper-specific figures and LaTeX tables.
 - Found that executable tests beat non-human baselines but lose to human-query policy and are contradicted by ablations.
 - Terminal decision remains: KILL_ARCHIVE.
+
+## v4.1 - Continuation Rerun Audit
+
+- Added `docs/paper96_iclr_submission_execution_plan_20260615.md` before rerunning.
+- Recompiled and reran the full benchmark without reducing experimental quality.
+- Audited regenerated CSV row counts, coverage, paired statistics, ablations, maximum-stress results, and failure cases.
+- Reconfirmed KILL_ARCHIVE: the proposed method remains lower-cost/no-human-burden but loses success, safety, recall, and regret to human-query policy, and two ablations beat the full method.

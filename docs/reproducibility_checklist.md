@@ -2,6 +2,7 @@
 
 ## What Reproduces
 
+- [x] `python -m py_compile src/run_experiment.py`
 - [x] `python src/run_experiment.py`
 - [x] `results/metrics.csv`
 - [x] `results/per_task_assumption_metrics.csv`

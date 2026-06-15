@@ -1,15 +1,16 @@
 # Child Status 96
 
-Current stage: ICLR main gate terminal
-Last update: 2026-06-14 20:39:45 +01:00
+Current stage: ICLR main v4.1 continuation audit terminal
+Last update: 2026-06-15 13:49:29 +01:00
 PDF: C:/Users/wangz/Downloads/96.pdf
 GitHub: https://github.com/Jason-Wang313/96_robotic_common_sense_tests
-Submission-hardening version: v4
+Submission-hardening version: v4.1 rerun audit
 Terminal decision: KILL_ARCHIVE
 ICLR main ready: no
 
 Evidence digest:
 - Seven seeds, five tasks, seven assumption families, five splits, nine methods, ablations, stress sweep, paired confidence intervals, and failure cases.
+- 2026-06-15 continuation rerun regenerated all CSVs, figures, LaTeX tables, and the terminal decision.
 - Strongest non-oracle combined-stress baseline: human_oracle_query_policy with task success 0.633 +/- 0.007.
 - Proposed executable tests: task success 0.567 +/- 0.008, unsafe recall 0.419, physical violation 0.318, damage/spill/collision 0.094, zero human burden.
 - Paired success difference vs human-query policy: -0.06600 +/- 0.01009 over 245 task/assumption/seed groups.

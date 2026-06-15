@@ -6,7 +6,8 @@ Executable common-sense tests are useful when a robot converts physical assumpti
 
 ## Supported Claims
 
-- The v4 benchmark is reproducible and paper-specific: five tasks, seven assumption families, five distribution shifts, nine methods, seven seeds, ablations, stress curves, paired comparisons, and failure cases.
+- The v4/v4.1 benchmark is reproducible and paper-specific: five tasks, seven assumption families, five distribution shifts, nine methods, seven seeds, ablations, stress curves, paired comparisons, and failure cases.
+- The 2026-06-15 v4.1 continuation rerun reproduces the negative decision with regenerated CSVs, figures, LaTeX tables, and summary evidence.
 - The proposed method improves over direct VLM action, LLM replanning, sequential 3D affordance reasoning, model deliberation, failure retrieval, and uncertainty probes on combined-stress task success.
 - The proposed method avoids human-query burden and has lower cost than the human-query baseline.
 
