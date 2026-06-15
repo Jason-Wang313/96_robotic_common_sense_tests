@@ -2,7 +2,7 @@
 
 Paper: 96 robotic_common_sense_tests
 
-This v4 pass applies the ICLR main-conference bar with a paper-specific executable-common-sense benchmark. The result is an honest archive decision, not a workshop resubmission.
+This v4/v4.1 pass applies the ICLR main-conference bar with a paper-specific executable-common-sense benchmark. The result is an honest archive decision, not a workshop resubmission.
 
 ## Attack 1: Human-query policy may beat executable tests.
 
@@ -40,7 +40,7 @@ Action: Preserve this as a useful negative/partial-positive result, but do not c
 
 Verdict: Still true.
 
-Evidence: the v4 benchmark is reproducible and paper-specific, but it is not real robot or high-fidelity simulator validation.
+Evidence: the v4/v4.1 benchmark is reproducible and paper-specific, but it is not real robot or high-fidelity simulator validation.
 
 Action: Frame as a negative evidence audit, not a submission.
 
@@ -57,3 +57,11 @@ Action: Do not claim novelty from common-sense reasoning alone.
 Verdict: Terminal condition reached.
 
 Action: Mark KILL_ARCHIVE and stop Paper 96 after public repo/PDF/report updates.
+
+## Attack 8: Continuation rerun might change the terminal decision.
+
+Verdict: Not changed.
+
+Evidence: the 2026-06-15 rerun regenerated the full CSV set and again found task success `0.56725 +/- 0.00807` for the proposed method versus `0.63326 +/- 0.00658` for human-query policy, with worse violation, damage, recall, and regret. `minus_cost_model` and `minus_calibration` still beat the full method.
+
+Action: Keep KILL_ARCHIVE.

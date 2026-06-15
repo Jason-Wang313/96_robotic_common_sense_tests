@@ -15,7 +15,7 @@ Paper: 96 Robotic Common-Sense Tests
 
 ## Hostile ICLR-Main Response
 
-A hostile reviewer should reject this as an ICLR-main submission. The v4 rebuild replaces the shared template experiment with a paper-specific executable-common-sense benchmark, but the central claim still fails.
+A hostile reviewer should reject this as an ICLR-main submission. The v4/v4.1 rebuild replaces the shared template experiment with a paper-specific executable-common-sense benchmark and reruns it, but the central claim still fails.
 
 The proposed method is useful relative to non-human reasoning baselines, but it loses to human-query policy:
 

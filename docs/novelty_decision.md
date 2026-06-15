@@ -6,4 +6,4 @@ New central mechanism tested: low-cost probes that reject unsafe affordances bef
 
 Decision: KILL_ARCHIVE.
 
-Reason: the v4 benchmark shows the proposed tests improve over non-human reasoning baselines, but they lose task success, safety, damage, and regret to human-query policy and are contradicted by ablations. The novelty boundary is therefore not strong enough for ICLR main.
+Reason: the v4/v4.1 benchmark shows the proposed tests improve over non-human reasoning baselines, but they lose task success, safety, damage, and regret to human-query policy and are contradicted by ablations. The novelty boundary is therefore not strong enough for ICLR main.

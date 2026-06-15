@@ -8,6 +8,8 @@ ICLR main-conference readiness: NO.
 
 The strongest defensible claim was that executable physical common-sense tests should improve closed-loop robot action selection beyond strong reasoning and recovery baselines. The benchmark does not support that claim.
 
+The 2026-06-15 v4.1 continuation rerun reproduced the same decision.
+
 The proposed method beats non-human baselines, but the human-query policy still wins the main gate:
 
 - human_oracle_query_policy task success: 0.633 +/- 0.007.

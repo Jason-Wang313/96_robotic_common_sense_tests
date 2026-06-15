@@ -2,11 +2,13 @@
 
 Paper: 96 robotic_common_sense_tests
 
-Submission-hardening version: v4
+Submission-hardening version: v4.1 rerun audit
 
 Gate verdict: KILL_ARCHIVE
 
 Evidence digest: v4 deterministic executable-common-sense benchmark, seven seeds, five tasks, seven assumption families, five splits, nine methods, ablations, stress sweep, paired confidence intervals, and failure cases.
+
+Continuation audit: the 2026-06-15 rerun regenerated the full benchmark artifacts and reproduced the same KILL_ARCHIVE decision.
 
 Fatal blockers:
 

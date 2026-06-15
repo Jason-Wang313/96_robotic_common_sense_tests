@@ -19,6 +19,14 @@
 - [x] Numeric hygiene audit: no NaN or Inf values in generated CSVs.
 - [x] Paper-specific figures and LaTeX tables.
 
+## Completed In v4.1 Continuation
+
+- [x] Paper-specific continuation execution plan before rerun.
+- [x] `python -m py_compile src/run_experiment.py`.
+- [x] Full rerun without reducing seeds, tasks, assumptions, splits, baselines, ablations, stress levels, or episodes.
+- [x] CSV integrity audit over row counts and coverage.
+- [x] Confirmation that the rerun keeps the terminal decision at KILL_ARCHIVE.
+
 ## Still Missing For ICLR Main
 
 - [ ] Real robot validation.

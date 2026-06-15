@@ -1,6 +1,6 @@
 # 96 Robotic Common-Sense Tests
 
-Submission-hardening version: v4
+Submission-hardening version: v4.1 rerun audit
 
 Terminal decision: KILL_ARCHIVE for ICLR main conference.
 
@@ -8,9 +8,11 @@ This repository is a negative evidence audit for the generated robotics idea:
 
 > Turn common-sense physical assumptions into executable affordance tests.
 
-The v4 rebuild tests the strongest defensible version of the idea: a robot should convert physical assumptions into low-cost executable probes that reject unsafe affordances before committing to manipulation or navigation.
+The v4/v4.1 rebuild tests the strongest defensible version of the idea: a robot should convert physical assumptions into low-cost executable probes that reject unsafe affordances before committing to manipulation or navigation.
 
 The tests help relative to pure VLM/LLM/affordance baselines, but they do not clear the ICLR-main gate. Under combined common-sense stress, the human-query policy has higher success, lower violations, lower damage, and lower regret:
+
+The 2026-06-15 continuation rerun reproduced the same terminal decision: executable tests remain the best no-human method, but the core closed-loop claim still loses to human-query policy and to two ablation variants.
 
 | Method | Task success | Unsafe recall | Physical violation | Damage/spill/collision | Cost | Human burden |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
