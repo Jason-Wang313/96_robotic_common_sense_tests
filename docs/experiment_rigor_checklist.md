@@ -1,31 +1,26 @@
 # Experiment Rigor Checklist
 
-## Completed In v4
+## Completed In v5 Expanded Audit
 
-- [x] Concrete pre-execution rebuild plan.
+- [x] Bulletproof expanded submission-readiness plan before executing v5.
 - [x] Hostile prior-work pressure from the shared robotics literature pool.
 - [x] Paper-specific executable common-sense affordance benchmark.
-- [x] Five tasks: stackable object placement, liquid transfer, tool reachability, door/drawer opening, and cluttered navigation.
-- [x] Seven physical assumption families.
-- [x] Five splits: nominal household, visual ambiguity, counterintuitive physics, language-goal ambiguity, and combined common-sense stress.
-- [x] Nine methods including direct VLM policy, LLM replanning, sequential 3D affordance reasoning, uncertainty probing, model-to-model deliberation, failure retrieval, human-query policy, proposed executable tests, and oracle.
-- [x] Seven deterministic seeds.
-- [x] Per-task/per-assumption/per-seed metrics.
+- [x] Six tasks: stackable object placement, liquid transfer, tool reachability, door/drawer opening, cluttered navigation, and fragile/deformable packing.
+- [x] Eight physical assumption families.
+- [x] Eight splits: nominal household, visual ambiguity, counterintuitive physics, language ambiguity, sensor noise, tool geometry, low-signal stress, and combined common-sense stress.
+- [x] Fourteen methods including direct VLM, LLM replanning, sequential 3D affordance reasoning, uncertainty probing, model deliberation, failure retrieval, calibrated affordance without tests, active perception, conformal risk filtering, human-query policy, policy repair, v4, v5, and oracle.
+- [x] Ten deterministic seeds.
+- [x] Raw episode-level main rollout evidence: 322,560 rows.
+- [x] Per-seed, per-split, per-method aggregate metrics.
 - [x] 95 percent confidence intervals.
-- [x] Paired task/assumption/seed comparison against the strongest non-oracle baseline.
-- [x] Ablations for executable probe, assumption parser, cost model, calibration, language-only, and geometry-only variants.
-- [x] Stress sweep across visual ambiguity, counterintuitive physics, language ambiguity, sensor noise, test cost, and combined maximum stress.
-- [x] Failure-case analysis.
-- [x] Numeric hygiene audit: no NaN or Inf values in generated CSVs.
+- [x] Paired seed comparisons against all non-oracle baselines.
+- [x] Ablations for executable probe, assumption parser, cost model, calibration, risk bound, counterfactual rollout, language-only, geometry-only, and active-perception-only variants.
+- [x] Stress sweep across six stress levels.
+- [x] Fixed-risk deployment at budgets 0.00, 0.05, 0.10, and 0.15.
+- [x] Negative-case mining over hard splits.
+- [x] Numeric hygiene audit through `scripts/validate_submission_artifacts.py`.
 - [x] Paper-specific figures and LaTeX tables.
-
-## Completed In v4.1 Continuation
-
-- [x] Paper-specific continuation execution plan before rerun.
-- [x] `python -m py_compile src/run_experiment.py`.
-- [x] Full rerun without reducing seeds, tasks, assumptions, splits, baselines, ablations, stress levels, or episodes.
-- [x] CSV integrity audit over row counts and coverage.
-- [x] Confirmation that the rerun keeps the terminal decision at KILL_ARCHIVE.
+- [x] 30-page ICLR-style PDF with bright boxed clickable citations.
 
 ## Still Missing For ICLR Main
 
@@ -33,7 +28,7 @@
 - [ ] High-fidelity simulator benchmark.
 - [ ] Trained model checkpoints.
 - [ ] Integrated external baseline codebases.
-- [ ] Manual full-paper related-work synthesis beyond the local hostile pool.
+- [ ] Independent third-party reproduction.
 - [ ] Hardware videos or qualitative rollouts.
 
 Decision: KILL_ARCHIVE. The local benchmark is rigorous enough to falsify the generated claim, not enough to revive it as an ICLR-main submission.

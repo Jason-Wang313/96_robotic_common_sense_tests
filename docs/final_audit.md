@@ -2,17 +2,20 @@
 
 1. Chosen thesis: Robotic Common-Sense Tests evaluates whether executable probes of physical assumptions improve robot action selection.
 2. ICLR-main decision: KILL_ARCHIVE.
-3. Submission-hardening version: v4.1 rerun audit.
-4. Last update: 2026-06-15 13:49:29 +01:00.
-5. Evidence: deterministic local executable-common-sense benchmark with seven seeds, five tasks, seven assumption families, five splits, nine methods, ablations, stress sweeps, paired confidence intervals, and failure cases; rerun on 2026-06-15 without reducing experimental quality.
-6. Strongest non-oracle baseline: human_oracle_query_policy.
-7. Combined-stress evidence: human-query policy reaches 0.633 +/- 0.007 task success; the proposed method reaches 0.567 +/- 0.008.
-8. Paired task/assumption/seed result: proposed minus human-query policy is -0.06600 +/- 0.01009 for success, +0.02662 +/- 0.00856 for physical violations, +0.01526 +/- 0.00538 for damage, -0.02483 +/- 0.00070 for cost, -0.37695 +/- 0.00643 for human burden, +0.03144 +/- 0.00281 for regret, and -0.03870 +/- 0.01062 for unsafe recall.
-9. Main failure mode: executable tests reduce reliance on humans and beat non-human reasoning baselines, but they do not match human-query success/safety and have high false rejections.
-10. Ablation failure: `minus_cost_model` and `minus_calibration` beat full on task success.
-11. Closest hostile prior work: see `docs/hostile_prior_work.md`, `docs/hostile_prior_work_100_cards.csv`, and `docs/hostile_reviewer_response.md`.
-12. Reproducibility: `python src/run_experiment.py` regenerates the CSVs, figures, LaTeX tables, and terminal decision.
-13. Claim-validity status: ICLR-main claim killed; archive retained as a negative evidence report.
-14. Exact Downloads PDF path: `C:/Users/wangz/Downloads/96.pdf`.
-15. GitHub URL: https://github.com/Jason-Wang313/96_robotic_common_sense_tests.
-16. Confirmation: no visible Desktop PDF copy was requested or made.
+3. Submission-hardening version: v5 expanded hostile-review audit.
+4. Last update: 2026-06-22.
+5. Evidence: deterministic local executable-common-sense benchmark with 10 seeds, 6 tasks, 8 assumption families, 8 splits, 14 methods, ablations, stress sweeps, fixed-risk deployment, paired confidence intervals, and negative cases.
+6. Main rows: 322,560 rollouts, 23,040 dataset rows, 1,120 seed-metric rows, 1,568 aggregate metric rows, and 1,344 paired rows.
+7. Additional rows: 115,200 ablation rollouts, 259,200 stress-sweep rows, 138,240 fixed-risk rows, and 24 negative cases.
+8. Strongest hard-aggregate success baseline: `executable_common_sense_tests_v4` at 0.68351 task success.
+9. Strongest hard-aggregate safety/utility baseline: `conformal_risk_filter` at 0.19549 physical violation and 0.20773 robust utility.
+10. Strongest hard-aggregate diagnosis/recall/regret reference: `human_oracle_query_policy` at 0.74601 diagnosis, 0.51299 unsafe recall, and 0.17437 regret.
+11. V5 hard-aggregate evidence: success 0.54514, diagnosis 0.65052, recall 0.44944, false rejection 0.50990, violation 0.37830, regret 0.20551, utility -0.10301.
+12. Gate status: success false, diagnosis false, safety false, regret false, utility false, false-reject false, ablation true, stress true, fixed-risk false, scope false.
+13. Closest hostile prior work: see `docs/hostile_prior_work.md`, `docs/hostile_prior_work_100_cards.csv`, and `docs/hostile_reviewer_response.md`.
+14. Reproducibility: `python src/run_experiment.py`, `python scripts/generate_manuscript.py`, and `python scripts/validate_submission_artifacts.py`.
+15. Claim-validity status: ICLR-main claim killed; archive retained as a negative evidence report.
+16. Exact Downloads PDF path: `C:/Users/wangz/Downloads/96.pdf`.
+17. PDF SHA256: `492889C4112439872136EF409497C19C991C833C7A825D3533D2828D62D4DFD2`.
+18. GitHub URL: https://github.com/Jason-Wang313/96_robotic_common_sense_tests.
+19. Confirmation: no visible Desktop PDF copy was requested or made.

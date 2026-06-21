@@ -6,19 +6,19 @@ ICLR main-conference readiness: NO.
 
 ## Why It Fails
 
-The strongest defensible claim was that executable physical common-sense tests should improve closed-loop robot action selection beyond strong reasoning and recovery baselines. The benchmark does not support that claim.
+The strongest defensible claim was that executable physical common-sense tests should improve closed-loop robot action selection beyond strong active-perception, repair, conformal, human-query, and prior executable-test baselines. The expanded v5 benchmark does not support that claim.
 
-The 2026-06-15 v4.1 continuation rerun reproduced the same decision.
+The v5 audit is not too small: it uses 10 seeds, 6 tasks, 8 assumption families, 8 splits, 14 methods, 322,560 main rollout rows, 115,200 ablation rollouts, 259,200 stress rows, 138,240 fixed-risk rows, paired seed tests, and negative-case mining.
 
-The proposed method beats non-human baselines, but the human-query policy still wins the main gate:
+The method fails the hard aggregate:
 
-- human_oracle_query_policy task success: 0.633 +/- 0.007.
-- proposed_executable_common_sense_tests task success: 0.567 +/- 0.008.
-- Paired proposed-minus-human success difference: -0.06600 +/- 0.01009.
-- Proposed physical violations are higher: 0.318 vs 0.292.
-- Proposed planning regret is higher: 0.217 vs 0.186.
-- Proposed false rejection rate is high: 0.427.
-- Two ablations beat the full method on task success.
+- V5 task success: 0.54514 vs 0.68351 for `executable_common_sense_tests_v4`.
+- V5 diagnosis: 0.65052 vs 0.74601 for `human_oracle_query_policy`.
+- V5 unsafe recall: 0.44944 vs 0.51299 for `human_oracle_query_policy`.
+- V5 false rejection rate: 0.50990.
+- V5 physical violation: 0.37830 vs 0.19549 for `conformal_risk_filter`.
+- V5 robust utility: -0.10301 vs 0.20773 for `conformal_risk_filter`.
+- Fixed-risk budget 0.05 does not uniformly rescue accepted utility.
 
 ## Honest Terminal Action
 
@@ -29,7 +29,8 @@ Archive/kill for ICLR main. Do not submit this paper to ICLR main in its current
 The idea would need a substantially new empirical project:
 
 - Real robot or high-fidelity simulator evidence across physical common-sense tasks.
-- Implemented VLM/LLM, affordance, deliberation, retrieval, and human-query baselines.
-- A test-selection mechanism with lower false rejection and better success/safety than human-in-the-loop recovery.
+- Implemented VLM/LLM, affordance, active-perception, conformal, repair, and human-query baselines.
+- A test-selection mechanism with much lower false rejection and better success/safety/utility than v4 and conformal references.
+- Pre-registered fixed-risk budgets with accepted utility that leads the frontier.
 - Manual related-work synthesis and qualitative rollouts.
-- A new terminal gate showing the full method beats ablations and strong baselines under maximum stress.
+- A new terminal gate showing the full method beats ablations and strong external baselines under maximum stress.

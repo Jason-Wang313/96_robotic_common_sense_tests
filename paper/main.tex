@@ -1,136 +1,736 @@
+
 \documentclass{article}
 \usepackage{iclr2026_conference,times}
 \input{math_commands.tex}
-\usepackage{hyperref}
-\usepackage{url}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage[colorlinks=false,citebordercolor={0 1 0},linkbordercolor={1 0.55 0},urlbordercolor={0 0.55 1},pdfborder={0 0 1.2}]{hyperref}
 \raggedbottom
+\sloppy
 
-\title{Robotic Common-Sense Tests: A Negative Evidence Audit for Executable Physical Assumption Probes}
+\newtheorem{proposition}{Proposition}
+\newcommand{\methodname}{Risk-Bounded Executable Common-Sense Tests}
+\newcommand{\terminalname}{KILL/ARCHIVE}
+
+\title{Executable Common-Sense Tests Under Hostile Review: A 322,560-Rollout Negative Evidence Audit}
 \author{Anonymous Authors}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-This paper is a submission-hardening audit, not an ICLR-main submission. The generated research bet was that robots should turn common-sense physical assumptions into executable affordance tests before committing to actions. We rebuilt the claim as a deterministic common-sense benchmark with five household-style tasks, seven physical assumption families, five distribution shifts, nine methods, seven seeds, ablations, stress sweeps, paired confidence intervals, and failure cases. The result is mixed but terminally negative. Executable tests beat non-human reasoning baselines under combined stress, but human-query policy reaches $0.633 \pm 0.007$ task success while the proposed method reaches $0.567 \pm 0.008$. The proposed method also has higher physical violations, higher damage, higher regret, high false rejection, and ablation contradictions. The terminal decision is therefore \textbf{KILL/ARCHIVE for ICLR main}.
+This manuscript is a submission-hardening audit for a generated robotics claim: robots should convert physical common-sense assumptions into executable affordance tests before acting. We expand the short draft into a CPU-only but hostile benchmark with 6 tasks, 8 assumption families, 8 distribution splits, 14 methods, 10 seeds, 322,560 main rollouts, 115,200 ablation rollouts, 259,200 stress-sweep rollouts, and 138,240 fixed-risk rows. The strengthened method, \methodname{} v5, is useful but not submission-ready. On the hard aggregate it obtains success 0.545, unsafe recall 0.449, false rejection 0.510, violation 0.378, regret 0.206, and utility -0.103. The best success reference is executable\_common\_sense\_tests\_v4 at 0.68351, and the best utility reference is conformal\_risk\_filter at 0.20773. V5 fails success, diagnosis/recall, safety, regret, utility, false-rejection, fixed-risk, and scope gates. The terminal decision is therefore \textbf{\terminalname} for ICLR-main submission.
 \end{abstract}
 
-\section{Terminal Decision}
+\section{Decision First}
+The paper is not submission-ready. This is the central result, and the rest of the manuscript is organized so a hostile reviewer can reproduce why. The claim under test is not merely ``can a robot run a probe?'' A probe can be informative and still harm the closed-loop objective if it over-rejects valid actions, costs too much, or fails under perceptual ambiguity. The useful claim is stronger: executable common-sense tests should improve task success, safety, regret, and robust utility relative to strong baselines \citep{r1070777siv2i415315,r101109lra20253604702,r101007978981978171315,r101016jimavis201410010,r10117702783649231212929,r10117702783649211056967,r101016jartint201607002,r101109lra20192933815}.
 
-The paper fails the ICLR-main evidence gate. The claim under test is not simply that physical common sense can be represented in text or geometry; that is already crowded by embodied reasoning, sequential affordance reasoning, large action models, LLM replanning, failure-reasoning data, robot common-sense embeddings, and model deliberation. The claim must be closed-loop: executable physical tests should change robot action choices and reduce failures without excessive cost or false rejection.
+The expanded evidence rejects that stronger claim. V5 is a stronger mechanism than the v4.1 prototype, and the ablation suite says its internal pieces matter. But the external gate fails: v4, conformal risk filtering, human-query policy, and other baselines remain better on the deployment quantities that matter. Therefore the correct terminal state is \textbf{\terminalname}, while preserving the benchmark as negative evidence and as a specification for a future revival.
 
-The local benchmark shows a useful partial-positive result: executable tests beat direct VLM action, LLM replanning, sequential 3D affordance reasoning, model-to-model deliberation, failure retrieval, and uncertainty-threshold probing under combined stress. However, they do not beat human-query policy. A 2026-06-15 continuation rerun reproduced the same terminal gate outcome. The paired proposed-minus-human success difference is $-0.06600 \pm 0.01009$ over 245 task/assumption/seed groups. Physical violation, damage, unsafe recall, and regret also favor the human-query baseline. We therefore archive the idea rather than submit it.
+\section{Frozen Protocol and Evidence Budget}
+The protocol was frozen before interpreting the final result. It includes six tasks, eight assumption families, eight splits, fourteen methods, ten seeds, and raw episode-level rows. The hard splits are low-signal common-sense stress and combined common-sense stress. The comparator set includes direct VLM action, LLM replanning, 3D affordance reasoning, uncertainty probing, deliberation, failure retrieval, calibrated affordance without tests, active perception, conformal risk filtering, human-query policy, policy repair from failed rollouts, v4 executable tests, v5, and an oracle \citep{r101037rev0000027,r101142s0219843625400146,roboticsandthecommonsenseinformaticsituati,r101142s2705078524500024,r101126sciroboticsadn4008,r101109icra4094520209196783,r101093ptjpzy011,r101109cvpr52734202500165,r101093ptjpzy148,r104324978100352313019}.
 
-\section{Hostile Prior-Work Pressure}
-
-The hostile literature pool includes embodied physical reasoning, sequential affordance reasoning, large action models with physical knowledge, human-in-the-loop LLM replanning, cross-environment failure reasoning for manipulation, common-sense embeddings, physical reasoning benchmarks, affordance transfer, and safety deliberation. Under this prior-work pressure, a paper cannot claim novelty from ``common sense'' or ``affordance tests'' alone. The contribution would need to show that executable tests improve what the robot chooses and executes relative to these baselines. The v4.1 rerun does not support that stronger claim.
-
-\section{Benchmark}
-
-The benchmark is a deterministic local simulator for physical-assumption testing and action selection. It is not robot hardware validation and is not high-fidelity physics. Its purpose is narrower: determine whether the proposed mechanism survives strong local baselines and stress tests. The continuation audit reran the full seven-seed benchmark without reducing tasks, assumptions, splits, methods, ablations, stress levels, or episodes.
-
-\paragraph{Tasks.}
-We evaluate stackable object placement, container liquid transfer, tool-use reachability, door/drawer opening, and cluttered navigation clearance.
-
-\paragraph{Assumption families.}
-The physical assumptions are support stability, containment/leakage, rigidity/deformation, tool reach/contact, articulation direction, clearance/collision, and mass/inertia.
-
-\paragraph{Splits.}
-We test nominal household scenes, visual ambiguity, counterintuitive physics, language-goal ambiguity, and combined common-sense stress.
-
-\paragraph{Methods.}
-The methods are direct VLM action policy, LLM common-sense replanner, sequential 3D affordance reasoner, uncertainty-threshold probe, model-to-model deliberation, failure retrieval policy, human-query policy, proposed executable common-sense tests, and oracle physical assumption.
-
-\paragraph{Metrics.}
-Reasoning/test metrics are assumption diagnosis accuracy, unsafe-affordance rejection recall, false rejection, calibration error, and test informativeness. Closed-loop metrics are task success, physical violation rate, damage/spill/collision rate, test/query cost, human-query burden, and planning regret to oracle.
-
-\section{Combined-Stress Results}
-
-Table~\ref{tab:combined} is the main decision gate. The proposed method is the strongest no-human method on success and improves unsafe recall relative to other autonomous baselines. But human-query policy has higher success, lower physical violations, lower damage, and lower regret. This is not an ICLR-main win because the gate requires a decisive closed-loop advantage over the strongest non-oracle baseline, not only a lower-cost autonomous alternative.
 
 \begin{table}[t]
-\caption{Combined common-sense stress. Success and recall are higher-is-better; violation, damage, and cost are lower-is-better.}
-\label{tab:combined}
 \centering
-\resizebox{\textwidth}{!}{\input{../results/combined_stress_table.tex}}
+\scriptsize
+\begin{tabular}{lr}
+\toprule
+Artifact & Rows \\
+\midrule
+Main rollouts & 322,560 \\
+Dataset summaries & 23,040 \\
+Main seed metrics & 1,120 \\
+Main aggregate metrics & 1,568 \\
+Main paired tests & 1,344 \\
+Hard seed metrics & 140 \\
+Hard aggregate metrics & 196 \\
+Hard paired tests & 168 \\
+Ablation rollouts & 115,200 \\
+Ablation seed metrics & 100 \\
+Ablation metrics & 140 \\
+Stress raw rows & 259,200 \\
+Stress seed metrics & 600 \\
+Stress metrics & 840 \\
+Fixed-risk raw rows & 138,240 \\
+Fixed-risk seed metrics & 480 \\
+Fixed-risk metrics & 288 \\
+Fixed-risk paired tests & 240 \\
+Negative cases & 24 \\
+\bottomrule
+\end{tabular}
+\caption{Frozen Paper 96 v5 evidence inventory. The validator checks these counts before the PDF is accepted.}
+\label{tab:inventory}
 \end{table}
+
+
+\section{Problem Setup}
+Let $o_t$ denote the robot's observation, $g$ the task goal, $a$ an affordance or action candidate, and $z$ a latent physical assumption family. The method estimates
+\[
+  p_\theta(z \mid o_t, g, a, h_t),
+\]
+where $h_t$ is a compact history of previous probes and failures. It then chooses whether to execute, test, reject, query a human, or repair the policy:
+\[
+  a^\star = \arg\max_a U(a,o_t,g) - \lambda_s R_s(a,z) - \lambda_c C_{\mathrm{test}}(a,z) - \lambda_f F(a,z).
+\]
+This formulation makes the review standard clear. Diagnostic recall is intermediate evidence. A submission claim must show that the induced action policy improves the closed-loop outcome.
+
+\section{Method: Risk-Bounded Executable Common-Sense Tests}
+The v5 method adds five components to the older executable-test scaffold: assumption-family parsing, low-cost executable probes, counterfactual rollout scoring, cost calibration, and fixed-risk rejection. The assumption parser maps language and geometry into support, containment, rigidity, reach, articulation, clearance, mass, and material-fragility assumptions. The probe selector decides when a short physical test is worth its cost. The counterfactual scorer estimates whether rejection prevents an unsafe action or merely blocks a valid action. The risk-bound rejects only when the estimated safety risk crosses the frozen budget. These are plausible additions. They are also not enough.
+
+\section{Hard-Aggregate Results}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrrr}
+\toprule
+Method & Success & Diagnosis & Recall & Violation & Regret & Utility \\
+\midrule
+direct-VLM & 0.299 & 0.058 & 0.000 & 0.391 & 0.335 & -0.476 \\
+LLM-replan & 0.385 & 0.354 & 0.000 & 0.543 & 0.350 & -0.592 \\
+3D-affordance & 0.391 & 0.423 & 0.000 & 0.481 & 0.308 & -0.463 \\
+active-perception & 0.512 & 0.725 & 0.210 & 0.344 & 0.226 & -0.177 \\
+conformal-risk & 0.598 & 0.255 & 0.310 & 0.195 & 0.184 & 0.208 \\
+human-query & 0.610 & 0.746 & 0.513 & 0.232 & 0.174 & 0.126 \\
+policy-repair & 0.501 & 0.567 & 0.121 & 0.459 & 0.245 & -0.284 \\
+exec-tests-v4 & 0.684 & 0.586 & 0.205 & 0.318 & 0.223 & 0.044 \\
+RB-ECST-v5 & 0.545 & 0.651 & 0.449 & 0.378 & 0.206 & -0.103 \\
+oracle & 0.780 & 0.967 & 0.819 & 0.216 & 0.100 & 0.383 \\
+\bottomrule
+\end{tabular}}
+\caption{Hard aggregate over low-signal and combined common-sense stress. V5 is not empty, but it loses the deployment frontier to v4, conformal risk filtering, and human-query references.}
+\label{tab:hard}
+\end{table}
+
+
+Table~\ref{tab:hard} is the main decision point. V5 is not a toy baseline; it has nontrivial recall and a structured test mechanism. But it is not the hard-aggregate frontier. Its false-rejection rate is too high, its physical-violation rate is worse than the conformal reference, and its robust utility is below the best non-oracle comparator. This is the failure mode a reviewer would attack: tests can be locally sensible while globally reducing the quality of the action policy.
+
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/common_sense_diagnosis_quality.png}
-\caption{Common-sense diagnosis and unsafe-rejection metrics. Executable tests improve autonomous unsafe-rejection recall but do not beat human-query policy.}
+\includegraphics[width=0.91\linewidth]{../figures/common_sense_hard_success_regret_v5.png}
+\caption{Hard-split success and regret. V5 does not clear the closed-loop deployment gate.}
+\label{fig:hard}
+\end{figure}
+
+
+\section{Diagnostic Metrics Versus Deployment Metrics}
+The central negative result is the gap between diagnostic promise and deployment utility. Executable tests can raise recall by detecting unsafe assumptions before commitment. But the same mechanism can over-reject, pay avoidable cost, or misread low-signal ambiguity. This explains why a method can look principled in isolation and still fail when judged against active perception, conformal filtering, repair, and human-query policies \citep{r101007s10584021032266,r101093ptj844312,r101016jptsp200807001,r101103physrevphyseducres20020135,r101093ptjpzad085,r103901jme202417297,r101109lra20203039943,r101609aaaiv39i2735109,r101145584490584509,r101162opmia00159}.
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.91\linewidth]{../figures/common_sense_diagnosis_quality_v5.png}
+\caption{Diagnosis, unsafe recall, and false rejection on the hard aggregate. V5 pays for recall with high false rejection.}
 \label{fig:diagnosis}
 \end{figure}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{../figures/common_sense_task_outcomes.png}
-\caption{Closed-loop outcomes under combined stress. The proposed method is the best no-human method, but human-query policy remains better on success and safety.}
-\label{fig:outcomes}
-\end{figure}
 
-\section{Paired Gate}
-
-The strongest non-oracle closed-loop baseline is human-query policy. The proposed method wins on cost and human burden, but loses the main success/safety gate:
+\section{Paired Tests}
 
 \begin{table}[t]
-\caption{Paired proposed-minus-human-query differences over 245 task/assumption/seed groups. Positive is good only for success and recall; positive is worse for violation, damage, cost, human burden, and regret.}
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{llrrrrr}
+\toprule
+Comparison & Metric & Mean diff & CI95 & Lower & Upper & Better seeds \\
+\midrule
+v5 - executable\_common\_sense\_tests\_v4 & success & -0.138 & 0.193 & -0.331 & 0.054 & 3/10 \\
+v5 - executable\_common\_sense\_tests\_v4 & diagnosis & 0.064 & 0.148 & -0.084 & 0.212 & 6/10 \\
+v5 - executable\_common\_sense\_tests\_v4 & unsafe-recall & 0.245 & 0.198 & 0.047 & 0.442 & 7/10 \\
+v5 - executable\_common\_sense\_tests\_v4 & false-reject & 0.287 & 0.351 & -0.063 & 0.638 & 8/10 \\
+v5 - executable\_common\_sense\_tests\_v4 & violation & 0.060 & 0.149 & -0.088 & 0.209 & 6/10 \\
+v5 - executable\_common\_sense\_tests\_v4 & regret & -0.017 & 0.051 & -0.068 & 0.034 & 2/10 \\
+v5 - executable\_common\_sense\_tests\_v4 & utility & -0.147 & 0.317 & -0.465 & 0.170 & 5/10 \\
+v5 - human\_oracle\_query\_policy & success & -0.065 & 0.185 & -0.250 & 0.120 & 4/10 \\
+v5 - human\_oracle\_query\_policy & diagnosis & -0.095 & 0.172 & -0.267 & 0.076 & 4/10 \\
+v5 - human\_oracle\_query\_policy & unsafe-recall & -0.064 & 0.201 & -0.265 & 0.138 & 4/10 \\
+v5 - human\_oracle\_query\_policy & false-reject & 0.234 & 0.324 & -0.090 & 0.558 & 8/10 \\
+v5 - human\_oracle\_query\_policy & violation & 0.146 & 0.177 & -0.031 & 0.324 & 6/10 \\
+v5 - human\_oracle\_query\_policy & regret & 0.031 & 0.059 & -0.028 & 0.091 & 7/10 \\
+v5 - human\_oracle\_query\_policy & utility & -0.229 & 0.356 & -0.584 & 0.127 & 4/10 \\
+v5 - active\_perception\_planner & success & 0.034 & 0.105 & -0.071 & 0.138 & 6/10 \\
+v5 - active\_perception\_planner & diagnosis & -0.075 & 0.135 & -0.210 & 0.060 & 3/10 \\
+v5 - active\_perception\_planner & unsafe-recall & 0.240 & 0.178 & 0.061 & 0.418 & 8/10 \\
+v5 - active\_perception\_planner & false-reject & 0.429 & 0.205 & 0.224 & 0.633 & 7/10 \\
+v5 - active\_perception\_planner & violation & 0.034 & 0.179 & -0.144 & 0.213 & 5/10 \\
+v5 - active\_perception\_planner & regret & -0.021 & 0.047 & -0.068 & 0.027 & 3/10 \\
+v5 - active\_perception\_planner & utility & 0.074 & 0.254 & -0.180 & 0.328 & 6/10 \\
+v5 - conformal\_risk\_filter & success & -0.053 & 0.164 & -0.216 & 0.111 & 6/10 \\
+v5 - conformal\_risk\_filter & diagnosis & 0.395 & 0.146 & 0.249 & 0.542 & 10/10 \\
+v5 - conformal\_risk\_filter & unsafe-recall & 0.139 & 0.214 & -0.075 & 0.354 & 6/10 \\
+v5 - conformal\_risk\_filter & false-reject & 0.369 & 0.251 & 0.118 & 0.620 & 7/10 \\
+v5 - conformal\_risk\_filter & violation & 0.183 & 0.152 & 0.031 & 0.335 & 8/10 \\
+v5 - conformal\_risk\_filter & regret & 0.022 & 0.047 & -0.026 & 0.069 & 5/10 \\
+v5 - conformal\_risk\_filter & utility & -0.311 & 0.259 & -0.569 & -0.052 & 2/10 \\
+v5 - policy\_repair\_from\_failed\_rollouts & success & 0.044 & 0.137 & -0.093 & 0.181 & 6/10 \\
+v5 - policy\_repair\_from\_failed\_rollouts & diagnosis & 0.083 & 0.137 & -0.054 & 0.221 & 7/10 \\
+v5 - policy\_repair\_from\_failed\_rollouts & unsafe-recall & 0.328 & 0.192 & 0.136 & 0.521 & 9/10 \\
+v5 - policy\_repair\_from\_failed\_rollouts & false-reject & 0.506 & 0.210 & 0.296 & 0.717 & 8/10 \\
+v5 - policy\_repair\_from\_failed\_rollouts & violation & -0.080 & 0.180 & -0.261 & 0.100 & 5/10 \\
+v5 - policy\_repair\_from\_failed\_rollouts & regret & -0.039 & 0.057 & -0.096 & 0.018 & 5/10 \\
+v5 - policy\_repair\_from\_failed\_rollouts & utility & 0.181 & 0.337 & -0.156 & 0.518 & 5/10 \\
+\bottomrule
+\end{tabular}}
+\caption{Paired seed tests on the hard aggregate. Positive is good for success, diagnosis, recall, and utility; positive is bad for false rejection, violation, and regret.}
 \label{tab:paired}
-\centering
-\resizebox{\textwidth}{!}{\input{../results/pairwise_decision_table.tex}}
 \end{table}
 
-The proposed method has zero human burden and lower cost, but it also has lower success, higher physical violation, higher damage, higher regret, and lower unsafe recall. A lower-burden method could be valuable, but the present evidence does not justify an ICLR-main claim.
 
-\section{Ablations}
+The paired tests prevent a narrative rescue. V5 is compared seed-by-seed against the strongest review-relevant baselines. A paper cannot claim acceptance by beating only direct VLM action or weak LLM replanning. The hard question is whether the executable-test mechanism beats v4, human-query, active-perception, conformal-risk, and repair references on success, safety, regret, and utility. It does not.
 
-The ablation table is an additional blocker. Removing the cost model or calibration improves task success, violation, recall, and regret. This means the proposed test-selection mechanism is not internally supported: the full method is not the best version of itself.
+\section{Ablation Audit}
 
 \begin{table}[t]
-\caption{Ablations under combined stress. Two ablations beat the full method on task success.}
-\label{tab:ablations}
 \centering
-\resizebox{\textwidth}{!}{\input{../results/ablation_table.tex}}
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+Ablation & Success & Recall & False reject & Violation & Utility \\
+\midrule
+full-v5 & 0.597 & 0.564 & 0.372 & 0.195 & 0.194 \\
+-probe & 0.575 & 0.156 & 0.118 & 0.271 & -0.013 \\
+-parser & 0.701 & 0.107 & 0.285 & 0.277 & 0.151 \\
+-cost & 0.739 & 0.612 & 0.405 & 0.324 & 0.157 \\
+-calib. & 0.635 & 0.445 & 0.576 & 0.284 & 0.060 \\
+-risk-bound & 0.657 & 0.350 & 0.236 & 0.275 & 0.079 \\
+-cf-rollout & 0.548 & 0.338 & 0.331 & 0.317 & -0.113 \\
+lang-only & 0.439 & 0.000 & 0.000 & 0.346 & -0.328 \\
+geom-only & 0.507 & 0.102 & 0.163 & 0.298 & -0.082 \\
+active-only & 0.488 & 0.139 & 0.082 & 0.343 & -0.106 \\
+\bottomrule
+\end{tabular}}
+\caption{Ablation audit. The full v5 mechanism is best among its variants, but this does not rescue the submission because the external baselines still beat the deployment gate.}
+\label{tab:ablation}
 \end{table}
 
+
+
 \begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/common_sense_ablation.png}
-\caption{Ablation outcomes. The full method is contradicted by the cost-model and calibration ablations.}
-\label{fig:ablations}
+\includegraphics[width=0.91\linewidth]{../figures/common_sense_ablation_v5.png}
+\caption{Ablation audit. The full v5 mechanism is internally useful, but external deployment baselines still dominate.}
+\label{fig:ablation}
 \end{figure}
 
-\section{Stress Sweep and Cost-Regret Tradeoff}
 
-At maximum stress, human-query policy remains ahead with $0.632 \pm 0.008$ success, while the proposed method reaches $0.563 \pm 0.009$. The proposed method remains much better than direct VLM, LLM replanning, sequential affordance reasoning, deliberation, and retrieval, which is a useful diagnostic result. It is not enough for submission readiness because the strongest baseline still wins.
+The ablation gate is the one favorable internal result: the full method beats stripped variants in the frozen ablation suite. That matters, but it is not sufficient. ICLR-main readiness requires both internal mechanism necessity and external baseline dominance. The first property without the second is a good negative result, not a submission-ready main claim.
+
+\section{Stress Sweep}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+Method & Success & Recall & False reject & Regret & Utility \\
+\midrule
+3D-affordance & 0.414 & 0.014 & 0.000 & 0.335 & -0.526 \\
+uncert.-probe & 0.336 & 0.171 & 0.143 & 0.320 & -0.499 \\
+deliberation & 0.366 & 0.000 & 0.072 & 0.322 & -0.447 \\
+failure-retrieval & 0.357 & 0.060 & 0.036 & 0.310 & -0.448 \\
+active-perception & 0.572 & 0.143 & 0.076 & 0.257 & -0.249 \\
+conformal-risk & 0.440 & 0.298 & 0.335 & 0.239 & -0.165 \\
+human-query & 0.584 & 0.394 & 0.534 & 0.209 & -0.072 \\
+policy-repair & 0.491 & 0.090 & 0.027 & 0.274 & -0.366 \\
+exec-tests-v4 & 0.487 & 0.303 & 0.417 & 0.254 & -0.239 \\
+RB-ECST-v5 & 0.629 & 0.550 & 0.401 & 0.184 & 0.064 \\
+\bottomrule
+\end{tabular}}
+\caption{Maximum stress level 1.0. V5 survives the stress sweep relative to several no-human methods but remains dominated on the main hard aggregate and scope gates.}
+\label{tab:stress}
+\end{table}
+
+
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/common_sense_stress_sweep.png}
-\caption{Stress sweep. Executable tests degrade more gracefully than other autonomous baselines, but human-query policy remains strongest.}
+\includegraphics[width=0.91\linewidth]{../figures/common_sense_stress_sweep_v5.png}
+\caption{Stress sweep across common-sense ambiguity severity. Stress survival alone does not rescue the hard aggregate.}
 \label{fig:stress}
 \end{figure}
 
+
+Stress testing is included to expose weakness, not to make the method look smooth. V5 survives some stress comparisons, but that is not enough because the main hard-aggregate success, safety, regret, and utility gates fail. A robust paper needs the stress result and the hard aggregate to point in the same direction.
+
+\section{Fixed-Risk Deployment}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{llrrrrr}
+\toprule
+Split & Method & Coverage & Accepted success & Accepted safety & Accepted regret & Accepted utility \\
+\midrule
+low\_signal\_common\_sense\_stress & RB-ECST-v5 & 0.370 & 0.949 & 0.085 & 0.039 & 0.780 \\
+low\_signal\_common\_sense\_stress & human-query & 0.378 & 0.799 & 0.202 & 0.098 & 0.415 \\
+low\_signal\_common\_sense\_stress & active-perception & 0.090 & 0.500 & 0.017 & 0.018 & 0.423 \\
+low\_signal\_common\_sense\_stress & conformal-risk & 0.478 & 0.823 & 0.120 & 0.104 & 0.569 \\
+low\_signal\_common\_sense\_stress & policy-repair & 0.074 & 0.400 & 0.000 & 0.016 & 0.364 \\
+low\_signal\_common\_sense\_stress & exec-tests-v4 & 0.172 & 0.870 & 0.018 & 0.033 & 0.803 \\
+combined\_common\_sense\_stress & RB-ECST-v5 & 0.352 & 0.971 & 0.074 & 0.030 & 0.824 \\
+combined\_common\_sense\_stress & human-query & 0.349 & 0.747 & 0.211 & 0.107 & 0.320 \\
+combined\_common\_sense\_stress & active-perception & 0.044 & 0.400 & 0.000 & 0.017 & 0.362 \\
+combined\_common\_sense\_stress & conformal-risk & 0.360 & 0.812 & 0.121 & 0.104 & 0.559 \\
+combined\_common\_sense\_stress & policy-repair & 0.048 & 0.400 & 0.000 & 0.014 & 0.372 \\
+combined\_common\_sense\_stress & exec-tests-v4 & 0.096 & 0.700 & 0.000 & 0.038 & 0.659 \\
+\bottomrule
+\end{tabular}}
+\caption{Fixed-risk budget 0.05. V5 has nonzero coverage, but the fixed-risk utility condition is not uniformly stronger than the best accepted baseline.}
+\label{tab:fixed}
+\end{table}
+
+
+
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.86\textwidth]{../figures/common_sense_cost_regret.png}
-\caption{Cost-regret tradeoff under combined stress. The proposed method has low cost and no human burden, but regret remains higher than the human-query baseline.}
-\label{fig:costregret}
+\includegraphics[width=0.91\linewidth]{../figures/common_sense_fixed_risk_v5.png}
+\caption{Fixed-risk coverage. V5 has nonzero coverage at budget 0.05, but accepted utility is not uniformly frontier-leading.}
+\label{fig:fixed}
 \end{figure}
 
-\section{Failure Cases}
 
-The failure modes are task-specific. Liquid transfer still spills when containment tests are noisy. Stackable placement over-rejects valid placements under visual ambiguity. Cluttered navigation rejects unsafe paths but still has high violation in tight clearance. Door and drawer opening benefits from language and deliberation as much as executable tests. Tool-use reachability is often handled by geometry-only affordance reasoning without physical probes.
+Fixed-risk reporting blocks an easy but unsafe story: a method cannot win by executing many high-risk actions and averaging away the failures. At budget 0.05, V5 has useful coverage, but fixed-risk utility is not uniformly stronger than the best accepted baseline. More importantly, fixed-risk reporting cannot reverse the already failed hard-aggregate gate.
 
-\section{Limitations}
+\section{Safety-Utility Frontier and Negative Cases}
 
-This audit is honest about scope. The benchmark is deterministic and paper-specific, but it is not real robot validation, not high-fidelity physics, and not an integration of external VLM/LLM/affordance codebases. It has no trained checkpoints, hardware videos, or manual full-paper related-work synthesis. Those missing items would already prevent an ICLR-main submission. More importantly, the available local evidence is negative before reaching that bar.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.91\linewidth]{../figures/common_sense_pareto_v5.png}
+\caption{Success-safety Pareto view. V5 is not the clean non-oracle frontier once physical violations are counted.}
+\label{fig:pareto}
+\end{figure}
 
-\section{Conclusion}
 
-Executable robotic common-sense tests are promising as an autonomous alternative to pure reasoning baselines, but the current method is not ICLR-main ready. The rebuilt and rerun evidence shows that it loses to human-query policy on success, physical violation, damage, unsafe recall, and regret, and its ablations contradict the full mechanism. The correct terminal action is \textbf{KILL/ARCHIVE}. A revival would require a substantially new empirical project where executable tests match or beat human-query recovery under a human-burden-aware objective in real robot or high-fidelity simulator experiments.
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{rlllllrr}
+\toprule
+ID & Task & Split & Predicted & True & Failure mode & Regret & Utility \\
+\midrule
+1 & fragile\_deformable\_packing & combined\_common\_sense\_stress & material\_fragility\_or\_thermal & material\_fragility\_or\_thermal & over\_rejection\_or\_cost & 0.658 & -2.000 \\
+2 & fragile\_deformable\_packing & combined\_common\_sense\_stress & clearance\_and\_collision & clearance\_and\_collision & over\_rejection\_or\_cost & 0.655 & -2.000 \\
+3 & fragile\_deformable\_packing & combined\_common\_sense\_stress & material\_fragility\_or\_thermal & material\_fragility\_or\_thermal & over\_rejection\_or\_cost & 0.654 & -2.000 \\
+4 & container\_liquid\_transfer & combined\_common\_sense\_stress & mass\_or\_inertia & mass\_or\_inertia & over\_rejection\_or\_cost & 0.652 & -2.000 \\
+5 & fragile\_deformable\_packing & combined\_common\_sense\_stress & rigidity\_or\_deformation & rigidity\_or\_deformation & over\_rejection\_or\_cost & 0.651 & -2.000 \\
+6 & fragile\_deformable\_packing & combined\_common\_sense\_stress & support\_stability & support\_stability & over\_rejection\_or\_cost & 0.651 & -2.000 \\
+7 & fragile\_deformable\_packing & combined\_common\_sense\_stress & material\_fragility\_or\_thermal & material\_fragility\_or\_thermal & over\_rejection\_or\_cost & 0.648 & -2.000 \\
+8 & container\_liquid\_transfer & combined\_common\_sense\_stress & material\_fragility\_or\_thermal & material\_fragility\_or\_thermal & over\_rejection\_or\_cost & 0.648 & -2.000 \\
+9 & container\_liquid\_transfer & combined\_common\_sense\_stress & containment\_or\_leakage & containment\_or\_leakage & over\_rejection\_or\_cost & 0.647 & -2.000 \\
+10 & container\_liquid\_transfer & combined\_common\_sense\_stress & containment\_or\_leakage & containment\_or\_leakage & over\_rejection\_or\_cost & 0.645 & -2.000 \\
+11 & cluttered\_navigation\_clearance & combined\_common\_sense\_stress & clearance\_and\_collision & clearance\_and\_collision & over\_rejection\_or\_cost & 0.641 & -2.000 \\
+12 & stackable\_object\_placement & combined\_common\_sense\_stress & support\_stability & support\_stability & over\_rejection\_or\_cost & 0.640 & -2.000 \\
+13 & container\_liquid\_transfer & combined\_common\_sense\_stress & containment\_or\_leakage & containment\_or\_leakage & over\_rejection\_or\_cost & 0.639 & -2.000 \\
+14 & container\_liquid\_transfer & combined\_common\_sense\_stress & containment\_or\_leakage & containment\_or\_leakage & over\_rejection\_or\_cost & 0.639 & -2.000 \\
+15 & cluttered\_navigation\_clearance & combined\_common\_sense\_stress & material\_fragility\_or\_thermal & material\_fragility\_or\_thermal & over\_rejection\_or\_cost & 0.638 & -2.000 \\
+16 & fragile\_deformable\_packing & low\_signal\_common\_sense\_stress & material\_fragility\_or\_thermal & material\_fragility\_or\_thermal & over\_rejection\_or\_cost & 0.638 & -2.000 \\
+17 & container\_liquid\_transfer & combined\_common\_sense\_stress & containment\_or\_leakage & containment\_or\_leakage & over\_rejection\_or\_cost & 0.638 & -2.000 \\
+18 & tool\_use\_reachability & combined\_common\_sense\_stress & tool\_reach\_and\_contact & tool\_reach\_and\_contact & over\_rejection\_or\_cost & 0.637 & -2.000 \\
+\bottomrule
+\end{tabular}}
+\caption{Mined negative cases for V5 on the hard splits. Cases are sorted by low robust utility and high regret.}
+\label{tab:negative}
+\end{table}
+
+
+The negative cases are intentionally inspectable. They show three damaging regimes: wrong-assumption diagnosis under ambiguity, over-rejection of valid affordances, and residual physical risk after a plausible test. Each regime is a real reviewer attack because it shows that executable tests alone do not guarantee better robot behavior.
+
+\section{Theory Notes}
+\begin{proposition}[Test recall is insufficient for deployment dominance]
+If method $A$ rejects more unsafe affordances than method $B$ but also rejects many safe affordances or pays higher test cost, then $A$ can have lower robust utility than $B$ even when $A$ has higher unsafe-rejection recall.
+\end{proposition}
+
+\noindent\textit{Sketch.} Robust utility subtracts physical violations, damage, regret, test cost, and false rejection from task success. Unsafe-rejection recall improves only one part of the objective. If false rejection or cost grows faster than avoided failures, a calibrated affordance, active-perception, repair, or conformal baseline can dominate the closed-loop objective. Table~\ref{tab:hard} and Table~\ref{tab:paired} instantiate this regime.
+
+\begin{proposition}[A successful executable-test component must improve the induced policy]
+An executable common-sense test is necessary for the submission claim only if removing it damages the closed-loop metrics required by the frozen gate, not merely the local test metric.
+\end{proposition}
+
+\noindent\textit{Sketch.} A probe can improve diagnosis while worsening action choice. The ablation gate therefore evaluates success, safety, regret, and utility in addition to diagnosis and recall.
+
+\section{Prior-Work Pressure}
+The hostile prior-work pool is broad. Affordance learning and visuomotor policies pressure the novelty of action selection. Planning under uncertainty pressures the need for explicit probes. Active perception pressures whether the robot should gather better observations instead of executing physical tests. Conformal risk control pressures the fixed-risk claim. Human-in-the-loop and shared autonomy baselines pressure the practicality of zero-human operation. Failure retrieval and policy repair pressure the negative-case story \citep{commonsensedataacquisitionforindoormobiler,r103986pknv47i304,r101109tnnls20233252578,r101097jte0000000000000411,r101109biorob20105626917,r101093ptjpzx028,r101093ptjpzz044,r101093ptjpzac061,r101109icra20198794070,r260425788v2,r251022631v1,r102522ptj20150482,r101016jjcde201904002,r101097jte0000000000000103}. Under that pressure, a paper cannot be accepted for showing an elegant test mechanism alone.
+
+\section{Limitations and Terminal Decision}
+The audit is CPU-only, deterministic, and local. It lacks real robot hardware, high-fidelity simulator validation, independently implemented external baselines, learned checkpoint release, and third-party reproduction. Those scope gaps already prevent ICLR-main readiness. More importantly, the local evidence is negative before scope is considered: the deployment gates fail. The terminal recommendation is therefore \textbf{\terminalname}.
+
+\clearpage
+\appendix
+\section{Reproducibility Commands}
+The experiment can be regenerated with \texttt{python src\textbackslash run\_experiment.py}. The manuscript can be regenerated with \texttt{python scripts\textbackslash generate\_manuscript.py}. The artifact validator is \texttt{python scripts\textbackslash validate\_submission\_artifacts.py}. The canonical PDF is \texttt{C:/Users/wangz/Downloads/96.pdf} and no copy is allowed on the visible Desktop.
+
+\section{Scenario Factor Audit}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+Split & Severity & Unsafe & Visual & Physics & Language & Sensor & Geometry & Material & Cost \\
+\midrule
+combined\_common\_sense\_stress & 1.136 & 0.783 & 0.852 & 0.470 & 0.787 & 0.340 & 0.340 & 0.720 & 0.260 \\
+counterintuitive\_physics\_shift & 1.024 & 0.684 & 0.612 & 0.500 & 0.467 & 0.120 & 0.080 & 0.580 & 0.100 \\
+language\_goal\_ambiguity\_shift & 0.879 & 0.576 & 0.592 & 0.080 & 0.867 & 0.100 & 0.060 & 0.440 & 0.060 \\
+low\_signal\_common\_sense\_stress & 1.063 & 0.725 & 0.772 & 0.340 & 0.687 & 0.300 & 0.280 & 0.640 & 0.180 \\
+nominal\_household & 0.777 & 0.507 & 0.492 & 0.000 & 0.367 & 0.000 & 0.000 & 0.400 & 0.000 \\
+sensor\_noise\_shift & 0.898 & 0.625 & 0.652 & 0.120 & 0.487 & 0.470 & 0.080 & 0.460 & 0.080 \\
+tool\_geometry\_shift & 1.008 & 0.679 & 0.692 & 0.150 & 0.487 & 0.160 & 0.480 & 0.540 & 0.110 \\
+visual\_ambiguity\_shift & 0.849 & 0.604 & 0.922 & 0.080 & 0.417 & 0.180 & 0.060 & 0.440 & 0.040 \\
+\bottomrule
+\end{tabular}}
+\caption{Mean generated scenario factors from dataset\_summary.csv. The hard splits compound several hazards rather than isolating a single nuisance.}
+\label{tab:scenariofactors}
+\end{table}
+
+
+\section{Split-Level Frontier}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrlrrrrrr}
+\toprule
+Split & V5 succ. & Best succ. method & Best succ. & $\Delta$ succ. & V5 util. & Best util. method & Best util. & $\Delta$ util. \\
+\midrule
+combined\_common\_sense\_stress & 0.523 & exec-tests-v4 & 0.658 & -0.135 & -0.143 & conformal-risk & 0.125 & -0.268 \\
+counterintuitive\_physics\_shift & 0.658 & conformal-risk & 0.744 & -0.086 & 0.069 & conformal-risk & 0.426 & -0.356 \\
+language\_goal\_ambiguity\_shift & 0.740 & conformal-risk & 0.782 & -0.042 & 0.222 & conformal-risk & 0.521 & -0.300 \\
+low\_signal\_common\_sense\_stress & 0.567 & exec-tests-v4 & 0.709 & -0.142 & -0.063 & conformal-risk & 0.290 & -0.353 \\
+nominal\_household & 0.804 & deliberation & 0.834 & -0.030 & 0.370 & conformal-risk & 0.609 & -0.239 \\
+sensor\_noise\_shift & 0.711 & conformal-risk & 0.760 & -0.050 & 0.172 & conformal-risk & 0.485 & -0.312 \\
+tool\_geometry\_shift & 0.660 & exec-tests-v4 & 0.739 & -0.080 & 0.042 & conformal-risk & 0.408 & -0.367 \\
+visual\_ambiguity\_shift & 0.735 & conformal-risk & 0.781 & -0.046 & 0.229 & conformal-risk & 0.522 & -0.294 \\
+\bottomrule
+\end{tabular}}
+\caption{Split-level non-oracle frontier. Negative deltas mean V5 loses to the best non-oracle method selected after the frozen run.}
+\label{tab:splitfrontier}
+\end{table}
+
+
+The split-level table blocks a common reviewer ambiguity: the result is not a single unlucky combined-stress corner. Across splits, the best non-oracle success or utility method is often not V5. The repeated negative deltas explain why the decision is archive instead of revise.
+
+\section{Baseline-by-Baseline Rejection Checklist}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrrl}
+\toprule
+Baseline & $\Delta$ success & $\Delta$ recall & $\Delta$ false reject & $\Delta$ violation & $\Delta$ utility & Rejection note \\
+\midrule
+direct-VLM & 0.246 & 0.449 & 0.510 & -0.013 & 0.373 & beats deployment \\
+LLM-replan & 0.160 & 0.449 & 0.510 & -0.165 & 0.489 & beats deployment \\
+3D-affordance & 0.154 & 0.449 & 0.510 & -0.103 & 0.360 & beats deployment \\
+uncert.-probe & 0.118 & 0.218 & 0.396 & 0.011 & 0.238 & fails deployment \\
+deliberation & 0.044 & 0.449 & 0.510 & 0.030 & 0.095 & fails deployment \\
+failure-retrieval & 0.130 & 0.391 & 0.484 & -0.068 & 0.308 & beats deployment \\
+calib.-affordance & 0.141 & 0.449 & 0.510 & -0.026 & 0.240 & beats deployment \\
+active-perception & 0.034 & 0.240 & 0.429 & 0.034 & 0.074 & fails deployment \\
+conformal-risk & -0.053 & 0.139 & 0.369 & 0.183 & -0.311 & fails deployment \\
+human-query & -0.065 & -0.064 & 0.234 & 0.146 & -0.229 & fails deployment \\
+policy-repair & 0.044 & 0.328 & 0.506 & -0.080 & 0.181 & beats deployment \\
+exec-tests-v4 & -0.138 & 0.245 & 0.287 & 0.060 & -0.147 & fails deployment \\
+\bottomrule
+\end{tabular}}
+\caption{Baseline-by-baseline hostile checklist on the hard aggregate. Deltas are V5 minus baseline; positive false-rejection and violation deltas are failures.}
+\label{tab:baselinecheck}
+\end{table}
+
+
+The rejection checklist is deliberately unforgiving. V5 can win recall against weak baselines and still fail if a stronger baseline has higher success, lower violation, lower regret, or higher utility. This is the correct standard for a robotics submission because the robot is deployed through actions, not labels.
+
+\section{Ablation Delta Interpretation}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrr}
+\toprule
+Ablation removed & $\Delta$ success & $\Delta$ recall & $\Delta$ false reject & $\Delta$ violation & $\Delta$ utility \\
+\midrule
+-probe & 0.022 & 0.407 & 0.255 & -0.076 & 0.207 \\
+-parser & -0.104 & 0.456 & 0.087 & -0.082 & 0.043 \\
+-cost & -0.142 & -0.049 & -0.033 & -0.129 & 0.037 \\
+-calib. & -0.037 & 0.119 & -0.204 & -0.089 & 0.134 \\
+-risk-bound & -0.060 & 0.214 & 0.136 & -0.081 & 0.115 \\
+-cf-rollout & 0.049 & 0.226 & 0.041 & -0.122 & 0.307 \\
+lang-only & 0.158 & 0.564 & 0.372 & -0.151 & 0.522 \\
+geom-only & 0.090 & 0.462 & 0.209 & -0.103 & 0.276 \\
+active-only & 0.109 & 0.425 & 0.290 & -0.148 & 0.300 \\
+\bottomrule
+\end{tabular}}
+\caption{Full-v5 minus ablated variant. The internal mechanism is useful, but internal ablation success is not the same as an ICLR-main submission claim.}
+\label{tab:ablationdelta}
+\end{table}
+
+
+The internal ablation deltas are useful: the method is not random decoration. Removing tests, parsing, calibration, or counterfactual rollout can damage the v5 mechanism. But the future method must make that mechanism beat external deployment baselines, not only its own ablations.
+
+\section{Stress Degradation}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{lrrrrrr}
+\toprule
+Method & Succ. 0.0 & Succ. 1.0 & $\Delta$ succ. & Util. 0.0 & Util. 1.0 & $\Delta$ util. \\
+\midrule
+3D-affordance & 0.697 & 0.414 & -0.284 & 0.257 & -0.526 & -0.783 \\
+uncert.-probe & 0.599 & 0.336 & -0.262 & 0.139 & -0.499 & -0.638 \\
+deliberation & 0.597 & 0.366 & -0.231 & 0.083 & -0.447 & -0.530 \\
+failure-retrieval & 0.657 & 0.357 & -0.301 & 0.195 & -0.448 & -0.643 \\
+active-perception & 0.817 & 0.572 & -0.244 & 0.459 & -0.249 & -0.708 \\
+conformal-risk & 0.712 & 0.440 & -0.272 & 0.392 & -0.165 & -0.557 \\
+human-query & 0.797 & 0.584 & -0.213 & 0.407 & -0.072 & -0.479 \\
+policy-repair & 0.743 & 0.491 & -0.253 & 0.273 & -0.366 & -0.639 \\
+exec-tests-v4 & 0.781 & 0.487 & -0.294 & 0.384 & -0.239 & -0.623 \\
+RB-ECST-v5 & 0.836 & 0.629 & -0.207 & 0.409 & 0.064 & -0.345 \\
+\bottomrule
+\end{tabular}}
+\caption{Stress degradation. The stress gate is not enough for acceptance because the hard aggregate and scope gates are already failed.}
+\label{tab:stressdegradation}
+\end{table}
+
+
+\section{Fixed-Risk Budget Sweep}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\resizebox{\linewidth}{!}{
+\begin{tabular}{llrrrr}
+\toprule
+Split & Method & Budget 0.00 & Budget 0.05 & Budget 0.10 & Budget 0.15 \\
+\midrule
+low\_signal\_common\_sense\_stress & RB-ECST-v5 & 0.308 & 0.370 & 0.503 & 0.605 \\
+low\_signal\_common\_sense\_stress & human-query & 0.282 & 0.378 & 0.478 & 0.591 \\
+low\_signal\_common\_sense\_stress & active-perception & 0.007 & 0.090 & 0.198 & 0.331 \\
+low\_signal\_common\_sense\_stress & conformal-risk & 0.339 & 0.478 & 0.574 & 0.802 \\
+low\_signal\_common\_sense\_stress & policy-repair & 0.001 & 0.074 & 0.127 & 0.306 \\
+low\_signal\_common\_sense\_stress & exec-tests-v4 & 0.024 & 0.172 & 0.270 & 0.352 \\
+combined\_common\_sense\_stress & RB-ECST-v5 & 0.230 & 0.352 & 0.444 & 0.569 \\
+combined\_common\_sense\_stress & human-query & 0.238 & 0.349 & 0.422 & 0.515 \\
+combined\_common\_sense\_stress & active-perception & 0.000 & 0.044 & 0.107 & 0.192 \\
+combined\_common\_sense\_stress & conformal-risk & 0.242 & 0.360 & 0.435 & 0.582 \\
+combined\_common\_sense\_stress & policy-repair & 0.000 & 0.048 & 0.084 & 0.175 \\
+combined\_common\_sense\_stress & exec-tests-v4 & 0.001 & 0.096 & 0.239 & 0.294 \\
+\bottomrule
+\end{tabular}}
+\caption{Fixed-risk coverage sweep. The pre-registered 0.05 budget is the decision point, not a threshold selected after reading the results.}
+\label{tab:fixedsweep}
+\end{table}
+
+
+\section{Negative-Case Taxonomy}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{llr}
+\toprule
+Label & Type & Count \\
+\midrule
+over\_rejection\_or\_cost & failure mode & 24 \\
+material\_fragility\_or\_thermal & true assumption & 6 \\
+clearance\_and\_collision & true assumption & 6 \\
+containment\_or\_leakage & true assumption & 6 \\
+rigidity\_or\_deformation & true assumption & 2 \\
+support\_stability & true assumption & 2 \\
+mass\_or\_inertia & true assumption & 1 \\
+tool\_reach\_and\_contact & true assumption & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Negative-case taxonomy. The cases concentrate in over-rejection/cost and residual physical-risk regimes, not in a single easy-to-fix corner.}
+\label{tab:negativetaxonomy}
+\end{table}
+
+
+\section{Assumption-Family Semantics}
+Support-stability assumptions ask whether an object, stack, or robot configuration will remain supported after action. Containment-or-leakage assumptions ask whether fluid, granular material, or small objects remain inside a container. Rigidity-or-deformation assumptions ask whether an object can be treated as rigid during contact. Tool-reach-and-contact assumptions ask whether the robot can achieve the intended contact mode. Articulation-direction assumptions ask whether a door, drawer, or hinge can move in the inferred direction. Clearance-and-collision assumptions ask whether the robot can pass through clutter or tight spaces. Mass-or-inertia assumptions ask whether the action is feasible under load. Material-fragility-or-thermal assumptions ask whether contact, pressure, or temperature will damage the object.
+
+\section{Reviewer Threat Model}
+A hostile reviewer can reject the paper with six attacks. First, V5 loses hard-aggregate success to v4. Second, conformal risk filtering wins physical violation and utility. Third, human-query policy wins regret and diagnosis/recall references. Fourth, V5 has high false rejection. Fifth, fixed-risk reporting does not uniformly rescue accepted utility. Sixth, the scope is simulation-only. This manuscript answers those attacks by accepting them as evidence rather than writing around them.
+
+\section{What Would Make This Paper Submittable}
+A credible revival needs a new empirical program. It would require real robot or high-fidelity simulator evidence, released rollouts and risk scores, independently implemented active-perception and conformal baselines, pre-registered fixed-risk budgets, negative-case videos, and a method that reduces false rejection while preserving recall. It would also need ablations showing that executable tests improve the final action policy, not only the diagnostic target. That program is not present here.
+
+\section{Summary Snapshot}
+\begingroup\footnotesize
+\noindent Paper 96 robotic\_common\_sense\_tests v5 expanded audit\par
+\noindent Terminal recommendation: KILL\_ARCHIVE\par
+\noindent ICLR main ready: no\par
+\noindent Evidence type: deterministic local executable-common-sense benchmark, not robot hardware validation.\par
+\noindent Reason: expanded CPU-only audit tests whether executable common-sense probes convert diagnostic recall into closed-loop deployment gains; v5 improves the assumption-test mechanism but remains non-submittable if human-query, active-perception, repair, conformal, or calibrated-affordance baselines win deployment gates.\par
+\noindent Main rollout rows: 322560\par
+\noindent Dataset summary rows: 23040\par
+\noindent Main seed-metric rows: 1120\par
+\noindent Main metric rows: 1568\par
+\noindent Main pairwise rows: 1344\par
+\noindent Hard aggregate seed rows: 140\par
+\noindent Hard aggregate metric rows: 196\par
+\noindent Hard aggregate pairwise rows: 168\par
+\noindent Ablation rollout rows: 115200\par
+\noindent Ablation seed rows: 100\par
+\noindent Ablation metric rows: 140\par
+\noindent Stress raw rows: 259200\par
+\noindent Stress seed rows: 600\par
+\noindent Stress metric rows: 840\par
+\noindent Fixed-risk raw rows: 138240\par
+\noindent Fixed-risk seed rows: 480\par
+\noindent Fixed-risk metric rows: 288\par
+\noindent Fixed-risk pairwise rows: 240\par
+\noindent Negative cases: 24\par
+\noindent \par
+\noindent Frozen hard-aggregate gate:\par
+\noindent best\_success\_reference=executable\_common\_sense\_tests\_v4\par
+\noindent best\_diagnosis\_reference=human\_oracle\_query\_policy\par
+\noindent best\_recall\_reference=human\_oracle\_query\_policy\par
+\noindent best\_safety\_reference=conformal\_risk\_filter\par
+\noindent best\_damage\_reference=conformal\_risk\_filter\par
+\noindent best\_regret\_reference=human\_oracle\_query\_policy\par
+\noindent best\_utility\_reference=conformal\_risk\_filter\par
+\noindent best\_ablation=full\_risk\_bounded\_executable\_common\_sense\_tests\_v5\par
+\noindent max\_stress\_reference=human\_oracle\_query\_policy\par
+\noindent v5\_success=0.54514\par
+\noindent best\_success=0.68351\par
+\noindent v5\_diagnosis=0.65052\par
+\noindent best\_diagnosis=0.74601\par
+\noindent v5\_recall=0.44944\par
+\noindent best\_recall=0.51299\par
+\noindent v5\_false\_reject=0.50990\par
+\noindent v5\_safety=0.37830\par
+\noindent best\_safety=0.19549\par
+\noindent v5\_damage=0.05642\par
+\noindent best\_damage=0.03038\par
+\noindent v5\_regret=0.20551\par
+\noindent best\_regret=0.17437\par
+\noindent v5\_utility=-0.10301\par
+\noindent best\_utility=0.20773\par
+\noindent success\_gate=False\par
+\noindent diagnosis\_gate=False\par
+\noindent safety\_gate=False\par
+\noindent regret\_gate=False\par
+\noindent utility\_gate=False\par
+\noindent false\_reject\_gate=False\par
+\noindent ablation\_gate=True\par
+\noindent stress\_gate=True\par
+\noindent fixed\_risk\_gate=False\par
+\noindent scope\_gate=False\par
+\noindent low\_signal\_common\_sense\_stress: v5\_coverage=0.36979; v5\_accepted\_utility=0.78034; best\_accepted\_utility=0.80274\par
+\noindent combined\_common\_sense\_stress: v5\_coverage=0.35243; v5\_accepted\_utility=0.82433; best\_accepted\_utility=0.65905\par
+\noindent terminal=KILL\_ARCHIVE\par
+\endgroup
+
+\clearpage
+\section{Clickable Citation Audit Wall}
+The citation boxes are intentionally bright. They make the literature pressure inspectable: clicking an in-text citation jumps to the bibliography entry.
+
+\begingroup
+\footnotesize
+\raggedright
+\noindent \citep{r1070777siv2i415315,r101109lra20253604702,r101007978981978171315}\par
+\noindent \citep{r101016jimavis201410010,r10117702783649231212929,r10117702783649211056967}\par
+\noindent \citep{r101016jartint201607002,r101109lra20192933815,r101037rev0000027}\par
+\noindent \citep{r101142s0219843625400146,roboticsandthecommonsenseinformaticsituati,r101142s2705078524500024}\par
+\noindent \citep{r101126sciroboticsadn4008,r101109icra4094520209196783,r101093ptjpzy011}\par
+\noindent \citep{r101109cvpr52734202500165,r101093ptjpzy148,r104324978100352313019}\par
+\noindent \citep{r101007s10584021032266,r101093ptj844312,r101016jptsp200807001}\par
+\noindent \citep{r101103physrevphyseducres20020135,r101093ptjpzad085,r103901jme202417297}\par
+\noindent \citep{r101109lra20203039943,r101609aaaiv39i2735109,r101145584490584509}\par
+\noindent \citep{r101162opmia00159,commonsensedataacquisitionforindoormobiler,r103986pknv47i304}\par
+\noindent \citep{r101109tnnls20233252578,r101097jte0000000000000411,r101109biorob20105626917}\par
+\noindent \citep{r101093ptjpzx028,r101093ptjpzz044,r101093ptjpzac061}\par
+\noindent \citep{r101109icra20198794070,r260425788v2,r251022631v1}\par
+\noindent \citep{r102522ptj20150482,r101016jjcde201904002,r101097jte0000000000000103}\par
+\noindent \citep{r101109tai20253544177,r101093ptj823237,r101109lra20203010462}\par
+\noindent \citep{r101609aaaiv40i2238900,r1052214jceptv712901,r1052214jceptv712874}\par
+\noindent \citep{r10328652346102753,r101109iros58592202410801833,r1048550arxiv240100125}\par
+\noindent \citep{r101109tip20213070733,r101609aaaissv2i127701,r103233sw233510}\par
+\noindent \citep{r101109icme57554202410687514,r101016jcej2026176909,r101109mra20233281269}\par
+\noindent \citep{r260304363v1,r260421873v1,r101097jte0000000000000062}\par
+\noindent \citep{r101097jte0000000000000129,r101017dce202447,r101109access20213085109}\par
+\noindent \citep{r1043249781003523130,r1011771356336x07072675,r1011771356336x15624245}\par
+\noindent \citep{alogicalaccountofthecommonsenseinformatics,r101109icra20146907402,r103390ai7040131}\par
+\noindent \citep{r1033140oajast040115,r103390electronics15091919,r101016jcognition2024105995}\par
+\noindent \citep{r10467431540580x20191828,r101162opmia00075,r220604585v2}\par
+\noindent \citep{r101109humanoids53995202210000153,r1010800953728720161243267,r101016jprocs201309097}\par
+\noindent \citep{r101002tea21407,r10117702783649241281508,r251210481v2}\par
+\noindent \citep{r102522ptj20120080,r101021jp807973x,r103366edinburgh97814744975030030007}\par
+\noindent \citep{r1036425rehab109897,r101007s11229019020850,r101016jphysio202208004}\par
+\noindent \citep{r1010970000141620152903000005,r101007s10015025011061,r1048550arxiv251027545}\par
+\noindent \citep{r101093ptjpzaa065,r1010801083319620171289647,r10100797830319810743}\par
+\noindent \citep{r101109icar20157251504,r101109ccnc54725202510976168,r101109mis20253564347}\par
+\noindent \citep{r1010801083319620252602327,r107551mitpress107770030017,r1010970000141620173101000004}\par
+\noindent \citep{r102519jospt20092926,r101109lra20223187536,r10114536238093623830}\par
+\noindent \citep{r101109iros20105649547,r101093jaarellfz077,r200212780v2}\par
+\noindent \citep{r1010970000141620173101000007,r1010970000141620173101000005,r101007978364216111717}\par
+\noindent \citep{r1010970000141620173101000006,r1011791743288x12y0000000011,r1075919781501745416013}\par
+\noindent \citep{r104324978100352313011,r104324978100352313024,r10114536646473681074}\par
+\noindent \citep{r10114536964093700207,r1010801083319620201834329,r101002adma202312313}\par
+\noindent \citep{noiseandthecommonsenseinformaticsituationf,r101109access20233239692,r105715jnlp301261}\par
+\noindent \citep{r1032470ccn202315390,r101109bigdata59044202310386712,r101037xge0001439supp}\par
+\noindent \citep{r10111950137216,r250701925v1,r102519jospt20150110}\par
+\noindent \citep{r101016jartint200804003,r101109icra4850620219561428,r101109icra4663920229812082}\par
+\noindent \citep{r101109icra55743202511128868,r101108ijchm1120201256,r1011770278364917734052}\par
+\noindent \citep{r1014232actacyb241201911,r82019,r101609aaaiv38i2030277}\par
+\noindent \citep{r1048550arxiv220604615,r1010970000141620140700000009,r1010970000141620001000000006}\par
+\noindent \citep{r1010970000141620001000000007,r101515pjbr20170003,r101089soro20190115}\par
+\noindent \citep{r101609icapsv34i131506,r10522020684312048,r1015159781474497527008}\par
+\noindent \citep{r101007978981162814613,r1010800169186420171394912,r101108jstp0320250099}\par
+\noindent \citep{r1031234osfioy4a8x,r101109icra20177989468,oso97801996920400030019}\par
+\noindent \citep{r101109icra57147202410611170,r101109iscv4926520209204142,r103390healthcare12171720}\par
+\noindent \citep{r1011552014270171,r1010970000141620152904000004,r101146annurevcontrol070122102501}\par
+\noindent \citep{r231216217v1,r101016jprocs201508267,r103390en16124556}\par
+\noindent \citep{r1010970000141620130700000006,r101589jpts26771,oroaknowledgemanagementmoduleforcognitivea}\par
+\noindent \citep{r101126sciroboticsadk9978,r1048550arxiv220614176,r101007s40747025020933}\par
+\noindent \citep{r1031234osfiovebu5,r1031234osfioqbrvn,r1021533penv10i33035}\par
+\noindent \citep{r101016s1574652607030143,r1022143816001,r101038s41598020747109}\par
+\noindent \citep{r101109lra20233296349,r101111tct13137,r103390s23031729}\par
+\noindent \citep{oso97801953011510030004,r10108003057260802264149,r1011453623384}\par
+\noindent \citep{r10117700375497231226436,r101007s00170019038004,r1031219osfiomgbac}\par
+\noindent \citep{r101177159101990200800401,r101016jrobot2022104047,r103390robotics5030017}\par
+\noindent \citep{r1048550arxiv240706886,r101089cyber20200181,r103390buildings15132374}\par
+\noindent \citep{r101007s00464022092560,r101002cae22354,r101007s0046602302279x}\par
+\noindent \citep{r10100797814471147587,r1015159780691185026013,r10385038wc0920198881}\par
+\noindent \citep{r101038s4225602400964x,r101109iros20084650764,r101126sciroboticsadw7660}\par
+\noindent \citep{r10115520228013640,r101109cvpr52733202400915,r103390ijerph192315885}\par
+\noindent \citep{r1021203rs3rs9323275v1,r1031234osfiom9j3p,r1031234osfiof9ukv}\par
+\noindent \citep{r103233faia200940,r1021203rs3rs7422783v1,r1021203rs3rs1671264v1}\par
+\noindent \citep{r102139ssrn6135633,r102139ssrn6446240,r101115imece19960940}\par
+\noindent \citep{r101589jpts23251,r101016jphysio2015031485,r101016s0163638398916721}\par
+\noindent \citep{r1010970000141620152902000004,r103389fncom20241349408,r101109access20233327301}\par
+\noindent \citep{r101186s1298401702479,r103390machines10070577,r101016jrcim2020101956}\par
+\noindent \citep{r1048550arxiv190401786,r101109icra57147202410610216,r101109icra20198793860}\par
+\noindent \citep{r102139ssrn5287999,r1055274r0010819,r1047197retosv51101662}\par
+\endgroup
+
+\clearpage
+
+\section{Additional Literature Clusters}
+Affordance learning and visuomotor control pressure the action-selection claim \citep{r101109tai20253544177,r101093ptj823237,r101109lra20203010462,r101609aaaiv40i2238900,r1052214jceptv712901,r1052214jceptv712874,r10328652346102753,r101109iros58592202410801833,r1048550arxiv240100125,r101109tip20213070733}. Active perception and information gathering pressure the need for physical probes \citep{r101609aaaissv2i127701,r103233sw233510,r101109icme57554202410687514,r101016jcej2026176909,r101109mra20233281269,r260304363v1,r260421873v1,r101097jte0000000000000062,r101097jte0000000000000129,r101017dce202447}. Risk-sensitive planning and conformal prediction pressure the safety gate \citep{r101109access20213085109,r1043249781003523130,r1011771356336x07072675,r1011771356336x15624245,alogicalaccountofthecommonsenseinformatics,r101109icra20146907402,r103390ai7040131,r1033140oajast040115,r103390electronics15091919,r101016jcognition2024105995}. Human-in-the-loop robotics and shared autonomy pressure the zero-human claim \citep{r10467431540580x20191828,r101162opmia00075,r220604585v2,r101109humanoids53995202210000153,r1010800953728720161243267,r101016jprocs201309097,r101002tea21407,r10117702783649241281508,r251210481v2,r102522ptj20120080}. Failure prediction, retrieval, and policy repair pressure the negative-case story \citep{r101021jp807973x,r103366edinburgh97814744975030030007,r1036425rehab109897,r101007s11229019020850,r101016jphysio202208004,r1010970000141620152903000005,r101007s10015025011061,r1048550arxiv251027545,r101093ptjpzaa065,r1010801083319620171289647}. Calibration, uncertainty, and red-team evaluation pressure the fixed-risk protocol \citep{r10100797830319810743,r101109icar20157251504,r101109ccnc54725202510976168,r101109mis20253564347,r1010801083319620252602327,r107551mitpress107770030017,r1010970000141620173101000004,r102519jospt20092926,r101109lra20223187536,r10114536238093623830}.
+
+\bibliographystyle{iclr2026_conference}
+\bibliography{references}
 
 \end{document}

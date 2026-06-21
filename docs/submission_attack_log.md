@@ -2,66 +2,66 @@
 
 Paper: 96 robotic_common_sense_tests
 
-This v4/v4.1 pass applies the ICLR main-conference bar with a paper-specific executable-common-sense benchmark. The result is an honest archive decision, not a workshop resubmission.
+This v5 pass applies the ICLR main-conference bar with an expanded paper-specific executable-common-sense benchmark. The result is an honest archive decision, not a workshop resubmission.
 
-## Attack 1: Human-query policy may beat executable tests.
+## Attack 1: v4 or another non-oracle baseline may beat the stronger v5 method.
 
 Verdict: Confirmed.
 
-Evidence: human_oracle_query_policy reaches 0.633 +/- 0.007 task success under combined stress; proposed_executable_common_sense_tests reaches 0.567 +/- 0.008. Paired proposed-minus-human success difference is -0.06600 +/- 0.01009 over 245 task/assumption/seed groups.
+Evidence: `executable_common_sense_tests_v4` reaches 0.68351 hard-aggregate task success; v5 reaches 0.54514.
 
-Action: Kill/archive. Lower human burden does not compensate for lower success and safety under the stated gate.
+Action: Kill/archive. A new version cannot claim progress if the prior executable-test baseline wins the success gate.
 
 ## Attack 2: Executable tests may have high false rejections.
 
 Verdict: Confirmed.
 
-Evidence: proposed false rejection rate is 0.427 under combined stress. `minus_cost_model` increases recall and success by over-testing, showing the cost/rejection tradeoff is not solved.
+Evidence: v5 hard-aggregate false rejection is 0.50990.
 
-Action: Do not claim a reliable test-selection policy.
+Action: Do not claim a reliable deployment test-selection policy.
 
-## Attack 3: The full mechanism may be contradicted by ablations.
+## Attack 3: Conformal risk filtering may dominate the safety and utility frontier.
 
 Verdict: Confirmed.
 
-Evidence: `minus_cost_model` reaches 0.608 task success and `minus_calibration` reaches 0.580, both above the full method's 0.573 ablation-run success.
+Evidence: `conformal_risk_filter` reaches 0.19549 physical violation and 0.20773 robust utility; v5 reaches 0.37830 physical violation and -0.10301 utility.
 
-Action: Kill/archive. Ablation contradictions are fatal for an ICLR-main mechanism claim.
+Action: Kill/archive. Safety and utility are central robotics gates.
 
-## Attack 4: Sequential affordance, deliberation, and retrieval baselines may already cover much of the space.
+## Attack 4: Human-query policy may still be the diagnosis, recall, and regret reference.
+
+Verdict: Confirmed.
+
+Evidence: `human_oracle_query_policy` reaches 0.74601 diagnosis, 0.51299 unsafe recall, and 0.17437 regret. V5 reaches 0.65052, 0.44944, and 0.20551.
+
+Action: Do not claim that no-human executable tests match the strongest review-relevant recovery baseline.
+
+## Attack 5: The full mechanism may be contradicted by ablations.
 
 Verdict: Partly mitigated.
 
-Evidence: proposed tests beat sequential affordance reasoning, model deliberation, LLM replanning, retrieval, uncertainty probing, and direct VLM under combined stress.
+Evidence: `best_ablation=full_risk_bounded_executable_common_sense_tests_v5`, so internal ablation necessity is improved relative to v4.1.
 
-Action: Preserve this as a useful negative/partial-positive result, but do not claim ICLR-main readiness.
+Action: Preserve this as a useful mechanism result, but do not submit because external baselines still dominate.
 
-## Attack 5: The evidence is local simulation only.
+## Attack 6: Fixed-risk reporting may not rescue deployment.
+
+Verdict: Confirmed.
+
+Evidence: At budget 0.05, v5 coverage is nonzero, but accepted utility is not uniformly stronger than the best accepted baseline. The frozen `fixed_risk_gate=False`.
+
+Action: Do not tune the budget after reading the results.
+
+## Attack 7: The evidence is local simulation only.
 
 Verdict: Still true.
 
-Evidence: the v4/v4.1 benchmark is reproducible and paper-specific, but it is not real robot or high-fidelity simulator validation.
+Evidence: the v5 benchmark is deterministic, local, and CPU-only. It is not real robot or high-fidelity simulator validation.
 
 Action: Frame as a negative evidence audit, not a submission.
 
-## Attack 6: Prior work already covers embodied physical reasoning and common-sense affordances.
-
-Verdict: Still true.
-
-Evidence: hostile pool includes Cosmos-Reason1, SeqAfford, Large Action Models, LLM replanning, failure reasoning data, common-sense embeddings, physical reasoning benchmarks, and model deliberation.
-
-Action: Do not claim novelty from common-sense reasoning alone.
-
-## Attack 7: No meaningful recoverable ICLR-main issue remains after the negative result.
+## Attack 8: No meaningful recoverable ICLR-main issue remains after the expanded negative result.
 
 Verdict: Terminal condition reached.
 
 Action: Mark KILL_ARCHIVE and stop Paper 96 after public repo/PDF/report updates.
-
-## Attack 8: Continuation rerun might change the terminal decision.
-
-Verdict: Not changed.
-
-Evidence: the 2026-06-15 rerun regenerated the full CSV set and again found task success `0.56725 +/- 0.00807` for the proposed method versus `0.63326 +/- 0.00658` for human-query policy, with worse violation, damage, recall, and regret. `minus_cost_model` and `minus_calibration` still beat the full method.
-
-Action: Keep KILL_ARCHIVE.

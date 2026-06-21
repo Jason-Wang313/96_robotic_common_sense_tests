@@ -1,13 +1,16 @@
 \begin{tabular}{lllll}
 \toprule
-Ablation & Success & Recall & Violation & Regret \\
+Ablation & Success & Recall & Violation & Utility \\
 \midrule
-geometry\_only\_affordance\_tests & 0.470 $\pm$ 0.007 & 0.182 & 0.357 & 0.273 \\
-language\_only\_common\_sense & 0.380 $\pm$ 0.007 & 0.023 & 0.385 & 0.315 \\
-minus\_assumption\_family\_parser & 0.514 $\pm$ 0.007 & 0.227 & 0.347 & 0.249 \\
-minus\_calibration & 0.580 $\pm$ 0.007 & 0.480 & 0.300 & 0.207 \\
-minus\_cost\_model & 0.608 $\pm$ 0.007 & 0.577 & 0.280 & 0.191 \\
-minus\_executable\_probe & 0.473 $\pm$ 0.007 & 0.139 & 0.366 & 0.268 \\
-proposed\_executable\_common\_sense\_tests & 0.573 $\pm$ 0.007 & 0.422 & 0.317 & 0.215 \\
+full\_risk\_bounded\_executable\_common\_sense\_tests\_v5 & 0.597 & 0.564 & 0.195 & 0.194 \\
+minus\_executable\_probe & 0.575 & 0.156 & 0.271 & -0.013 \\
+minus\_assumption\_parser & 0.701 & 0.107 & 0.277 & 0.151 \\
+minus\_cost\_model & 0.739 & 0.612 & 0.324 & 0.157 \\
+minus\_calibration & 0.635 & 0.445 & 0.284 & 0.060 \\
+minus\_risk\_bound & 0.657 & 0.350 & 0.275 & 0.079 \\
+minus\_counterfactual\_rollout & 0.548 & 0.338 & 0.317 & -0.113 \\
+language\_only\_common\_sense & 0.439 & 0.000 & 0.346 & -0.328 \\
+geometry\_only\_affordance\_tests & 0.507 & 0.102 & 0.298 & -0.082 \\
+active\_perception\_only & 0.488 & 0.139 & 0.343 & -0.106 \\
 \bottomrule
 \end{tabular}
