@@ -1,13 +1,22 @@
 \begin{tabular}{llll}
 \toprule
-Metric & Comparator & Diff & CI95 \\
+Comparison & Metric & Diff & CI95 \\
 \midrule
-task\_success & human\_oracle\_query\_policy & -0.0660 & 0.0101 \\
-physical\_violation\_rate & human\_oracle\_query\_policy & 0.0266 & 0.0086 \\
-damage\_spill\_collision\_rate & human\_oracle\_query\_policy & 0.0153 & 0.0054 \\
-test\_query\_cost & human\_oracle\_query\_policy & -0.0248 & 0.0007 \\
-human\_query\_burden & human\_oracle\_query\_policy & -0.3770 & 0.0064 \\
-planning\_regret\_to\_oracle & human\_oracle\_query\_policy & 0.0314 & 0.0028 \\
-unsafe\_affordance\_rejection\_recall & human\_oracle\_query\_policy & -0.0387 & 0.0106 \\
+v5 - active\_perception\_planner & task\_success & 0.0335 & 0.1049 \\
+v5 - active\_perception\_planner & physical\_violation\_rate & 0.0342 & 0.1786 \\
+v5 - active\_perception\_planner & planning\_regret\_to\_oracle & -0.0206 & 0.0472 \\
+v5 - active\_perception\_planner & robust\_utility & 0.0736 & 0.2539 \\
+v5 - conformal\_risk\_filter & task\_success & -0.0528 & 0.1635 \\
+v5 - conformal\_risk\_filter & physical\_violation\_rate & 0.1828 & 0.1523 \\
+v5 - conformal\_risk\_filter & planning\_regret\_to\_oracle & 0.0215 & 0.0472 \\
+v5 - conformal\_risk\_filter & robust\_utility & -0.3107 & 0.2586 \\
+v5 - human\_oracle\_query\_policy & task\_success & -0.0653 & 0.1852 \\
+v5 - human\_oracle\_query\_policy & physical\_violation\_rate & 0.1464 & 0.1772 \\
+v5 - human\_oracle\_query\_policy & planning\_regret\_to\_oracle & 0.0311 & 0.0595 \\
+v5 - human\_oracle\_query\_policy & robust\_utility & -0.2286 & 0.3557 \\
+v5 - policy\_repair\_from\_failed\_rollouts & task\_success & 0.0439 & 0.1372 \\
+v5 - policy\_repair\_from\_failed\_rollouts & physical\_violation\_rate & -0.0802 & 0.1805 \\
+v5 - policy\_repair\_from\_failed\_rollouts & planning\_regret\_to\_oracle & -0.0391 & 0.0567 \\
+v5 - policy\_repair\_from\_failed\_rollouts & robust\_utility & 0.1811 & 0.3373 \\
 \bottomrule
 \end{tabular}

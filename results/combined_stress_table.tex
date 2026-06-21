@@ -1,15 +1,19 @@
 \begin{tabular}{llllll}
 \toprule
-Method & Success & Recall & Violation & Damage & Cost \\
+Method & Success & Recall & Violation & Damage & Utility \\
 \midrule
-direct\_vlm\_action\_policy & 0.366 $\pm$ 0.007 & 0.000 & 0.402 & 0.127 & 0.000 \\
-failure\_retrieval\_policy & 0.452 $\pm$ 0.008 & 0.128 & 0.377 & 0.120 & 0.004 \\
-human\_oracle\_query\_policy & 0.633 $\pm$ 0.007 & 0.457 & 0.292 & 0.079 & 0.040 \\
-llm\_common\_sense\_replanner & 0.395 $\pm$ 0.008 & 0.011 & 0.395 & 0.134 & 0.001 \\
-model\_to\_model\_deliberation & 0.458 $\pm$ 0.007 & 0.107 & 0.365 & 0.121 & 0.001 \\
-oracle\_physical\_assumption & 0.752 $\pm$ 0.006 & 0.858 & 0.244 & 0.053 & 0.014 \\
-proposed\_executable\_common\_sense\_tests & 0.567 $\pm$ 0.008 & 0.419 & 0.318 & 0.094 & 0.015 \\
-sequential\_3d\_affordance\_reasoner & 0.435 $\pm$ 0.008 & 0.026 & 0.394 & 0.130 & 0.002 \\
-uncertainty\_threshold\_probe & 0.470 $\pm$ 0.007 & 0.244 & 0.344 & 0.106 & 0.028 \\
+direct\_vlm\_action\_policy & 0.280 & 0.000 & 0.401 & 0.125 & -0.525 \\
+llm\_common\_sense\_replanner & 0.352 & 0.000 & 0.566 & 0.164 & -0.675 \\
+sequential\_3d\_affordance\_reasoner & 0.360 & 0.000 & 0.495 & 0.105 & -0.529 \\
+uncertainty\_threshold\_probe & 0.406 & 0.223 & 0.386 & 0.158 & -0.403 \\
+model\_to\_model\_deliberation & 0.451 & 0.000 & 0.361 & 0.142 & -0.290 \\
+failure\_retrieval\_policy & 0.402 & 0.060 & 0.465 & 0.138 & -0.463 \\
+no\_test\_calibrated\_affordance & 0.377 & 0.000 & 0.420 & 0.107 & -0.409 \\
+active\_perception\_planner & 0.484 & 0.168 & 0.373 & 0.142 & -0.253 \\
+conformal\_risk\_filter & 0.547 & 0.274 & 0.206 & 0.037 & 0.125 \\
+human\_oracle\_query\_policy & 0.588 & 0.446 & 0.254 & 0.095 & 0.054 \\
+policy\_repair\_from\_failed\_rollouts & 0.475 & 0.107 & 0.478 & 0.095 & -0.349 \\
+executable\_common\_sense\_tests\_v4 & 0.658 & 0.205 & 0.331 & 0.101 & -0.008 \\
+risk\_bounded\_executable\_common\_sense\_tests\_v5 & 0.523 & 0.454 & 0.386 & 0.061 & -0.143 \\
 \bottomrule
 \end{tabular}

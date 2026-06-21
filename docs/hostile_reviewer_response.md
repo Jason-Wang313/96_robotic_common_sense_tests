@@ -4,28 +4,25 @@ Paper: 96 Robotic Common-Sense Tests
 
 ## Strongest Technical Threats
 
-- Cosmos-Reason1 and broader embodied physical-reasoning models.
-- SeqAfford and sequential 3D affordance reasoning via multimodal LLMs.
-- Large Action Models with physical world knowledge.
-- Human-in-the-loop robot action replanning with LLM common-sense reasoning.
-- Cross-environment failure reasoning data for vision-language manipulation.
-- Robot common-sense embeddings and physical reasoning benchmarks.
-- Model-to-model safety deliberation.
-- Gesture-driven affordance transfer and task-aware grasping.
+- Executable tests may be dominated by active perception, conformal risk filtering, policy repair, or human-query recovery.
+- High unsafe-rejection recall may be purchased with false rejection and test cost.
+- v4 executable tests may already capture the useful part of the mechanism.
+- Common-sense affordance testing may be covered by embodied physical-reasoning, sequential affordance, and language-conditioned robotics prior work.
+- Local deterministic simulation may be too weak for ICLR-main robotics claims.
 
 ## Hostile ICLR-Main Response
 
-A hostile reviewer should reject this as an ICLR-main submission. The v4/v4.1 rebuild replaces the shared template experiment with a paper-specific executable-common-sense benchmark and reruns it, but the central claim still fails.
+A hostile reviewer should reject this as an ICLR-main submission. The v5 rebuild is much stronger than the short draft and v4.1 rerun, but the central claim still fails.
 
-The proposed method is useful relative to non-human reasoning baselines, but it loses to human-query policy:
+Hard-aggregate evidence:
 
-- Task success: 0.567 +/- 0.008 vs 0.633 +/- 0.007 for human-query policy.
-- Physical violation: 0.318 vs 0.292.
-- Damage/spill/collision: 0.094 vs 0.079.
-- Planning regret: 0.217 vs 0.186.
-- Unsafe recall: 0.419 vs 0.457.
+- V5 task success: 0.54514 vs 0.68351 for `executable_common_sense_tests_v4`.
+- V5 physical violation: 0.37830 vs 0.19549 for `conformal_risk_filter`.
+- V5 robust utility: -0.10301 vs 0.20773 for `conformal_risk_filter`.
+- V5 regret: 0.20551 vs 0.17437 for `human_oracle_query_policy`.
+- V5 false rejection: 0.50990.
 
-The proposed method is cheaper and avoids human burden, but that is not enough for the terminal gate because the central claim requires success and safety gains, not only autonomy.
+The method is internally meaningful because the full v5 ablation wins its stripped variants. That does not rescue the submission because the external baselines beat the deployment gate.
 
 ## Honest Action
 
@@ -34,7 +31,7 @@ The paper is marked `KILL_ARCHIVE`. This avoids converting a generated robotics 
 ## What Would Be Needed To Revive
 
 - Real robot or high-fidelity benchmark experiments.
-- Implemented VLM/LLM, sequential affordance, deliberation, retrieval, human-query, and executable-test baselines.
-- Evidence that executable tests beat human-query/recovery or achieve comparable safety with much lower burden.
-- Lower false-rejection rates and ablations that support the full mechanism.
+- Implemented active-perception, conformal-risk, policy-repair, human-query, and executable-test baselines.
+- Evidence that executable tests beat v4 and external deployment baselines on success, safety, regret, and utility.
+- Lower false-rejection rates and fixed-risk utility that leads the accepted frontier.
 - Manual full-paper related-work audit and qualitative rollouts.

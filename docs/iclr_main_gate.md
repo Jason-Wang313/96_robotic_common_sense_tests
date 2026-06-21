@@ -2,22 +2,26 @@
 
 Paper: 96 robotic_common_sense_tests
 
-Submission-hardening version: v4.1 rerun audit
+Submission-hardening version: v5 expanded hostile-review audit
 
 Gate verdict: KILL_ARCHIVE
 
-Evidence digest: v4 deterministic executable-common-sense benchmark, seven seeds, five tasks, seven assumption families, five splits, nine methods, ablations, stress sweep, paired confidence intervals, and failure cases.
-
-Continuation audit: the 2026-06-15 rerun regenerated the full benchmark artifacts and reproduced the same KILL_ARCHIVE decision.
+Evidence digest: deterministic executable-common-sense benchmark, 10 seeds, 6 tasks, 8 assumption families, 8 splits, 14 methods, raw rollouts, ablations, stress sweep, fixed-risk deployment, paired confidence intervals, and negative cases.
 
 Fatal blockers:
 
-- The proposed method loses combined-stress task success to human-query policy.
-- Proposed task success is 0.567 +/- 0.008 vs 0.633 +/- 0.007 for human-query policy.
-- Proposed physical violation is 0.318 vs 0.292.
-- Proposed planning regret is 0.217 vs 0.186.
-- Proposed false rejection rate is 0.427.
-- Two ablations beat the full method on task success.
-- The evidence is local simulation rather than real robot or high-fidelity simulator validation.
+- `success_gate=False`: v5 success is 0.54514; the best non-oracle success baseline is `executable_common_sense_tests_v4` at 0.68351.
+- `diagnosis_gate=False`: v5 diagnosis and recall trail `human_oracle_query_policy`.
+- `safety_gate=False`: v5 physical violation is 0.37830; `conformal_risk_filter` is 0.19549.
+- `regret_gate=False`: v5 regret is 0.20551; `human_oracle_query_policy` is 0.17437.
+- `utility_gate=False`: v5 utility is -0.10301; `conformal_risk_filter` is 0.20773.
+- `false_reject_gate=False`: v5 false rejection is 0.50990.
+- `fixed_risk_gate=False`: budget 0.05 does not uniformly rescue accepted utility.
+- `scope_gate=False`: the evidence is local deterministic simulation rather than real robot or high-fidelity simulator validation.
+
+Positive but insufficient:
+
+- `ablation_gate=True`: the full v5 mechanism is internally useful relative to stripped variants.
+- `stress_gate=True`: v5 survives the maximum stress comparison used by the stress gate.
 
 The only honest main-conference-safe decision is to archive rather than overclaim.
